@@ -50,6 +50,7 @@ investment_agent/logs/
 *.sqlite
 *.sqlite3
 investment_agent/data/*.db
+investment_agent/data/portfolio.db
 
 # Reports
 reports/
@@ -71,8 +72,8 @@ htmlcov/
 .dmypy.json
 dmypy.json
 
-# Data files
-data/
+# Data files (but allow source code in investment_agent/data/)
+/data/
 *.parquet
 *.h5
 *.hdf5
