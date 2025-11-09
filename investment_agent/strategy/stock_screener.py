@@ -425,5 +425,226 @@ class StockScreener:
 
         return results
 
+    def screen_ai_companies(
+        self,
+        market: str = None,
+        min_score: float = 65.0
+    ) -> pd.DataFrame:
+        """Screen AI companies specifically.
+
+        Args:
+            market: Market filter ('USA', 'CANADA', 'INDIA', or None for all)
+            min_score: Minimum overall score
+
+        Returns:
+            DataFrame with AI company opportunities
+        """
+        logger.info(f"Screening AI companies for market: {market or 'ALL'}")
+
+        # Get AI company symbols
+        ai_symbols = self.data_fetcher.get_ai_companies(market=market)
+
+        logger.info(f"Analyzing {len(ai_symbols)} AI companies...")
+
+        all_candidates = []
+
+        for symbol in ai_symbols:
+            try:
+                logger.info(f"Analyzing AI company: {symbol}...")
+
+                # Fetch data
+                fundamentals = self.data_fetcher.get_fundamental_data(symbol)
+                if not fundamentals:
+                    logger.warning(f"No fundamental data for {symbol}")
+                    continue
+
+                # Perform fundamental analysis
+                fund_analysis = self.fundamental_analyzer.analyze_stock(fundamentals)
+
+                # Fetch price data for technical analysis
+                price_data = self.data_fetcher.get_stock_data(symbol, period="1y", interval="1d")
+                if price_data.empty:
+                    logger.warning(f"No price data for {symbol}")
+                    continue
+
+                # Perform technical analysis
+                tech_analysis = self.technical_analyzer.analyze_stock(price_data, symbol)
+
+                # Combine analyses
+                combined = self._combine_analyses(fundamentals, fund_analysis, tech_analysis)
+
+                if combined and combined['overall_score'] >= min_score:
+                    all_candidates.append(combined)
+                    logger.info(f"{symbol}: Score={combined['overall_score']:.1f}")
+
+                # Rate limiting
+                time.sleep(0.5)
+
+            except Exception as e:
+                logger.error(f"Error analyzing {symbol}: {str(e)}")
+                continue
+
+        if not all_candidates:
+            logger.warning("No AI company candidates found")
+            return pd.DataFrame()
+
+        df = pd.DataFrame(all_candidates)
+        df = df.sort_values('overall_score', ascending=False)
+
+        logger.info(f"Found {len(df)} AI companies meeting criteria")
+
+        return df
+
+    def screen_sector(
+        self,
+        sector: str,
+        market: str = None,
+        min_score: float = 65.0
+    ) -> pd.DataFrame:
+        """Screen specific sector for opportunities.
+
+        Args:
+            sector: Sector name (e.g., 'Fintech', 'Cloud Computing', 'EV & Clean Energy')
+            market: Market filter ('USA', 'CANADA', 'INDIA', or None for all)
+            min_score: Minimum overall score
+
+        Returns:
+            DataFrame with sector opportunities
+        """
+        logger.info(f"Screening {sector} sector for market: {market or 'ALL'}")
+
+        # Get sector company symbols
+        sector_symbols = self.data_fetcher.get_sector_companies(sector, market=market)
+
+        if not sector_symbols:
+            logger.warning(f"No companies found for sector: {sector}")
+            return pd.DataFrame()
+
+        logger.info(f"Analyzing {len(sector_symbols)} companies in {sector}...")
+
+        all_candidates = []
+
+        for symbol in sector_symbols:
+            try:
+                logger.info(f"Analyzing {symbol}...")
+
+                # Fetch data
+                fundamentals = self.data_fetcher.get_fundamental_data(symbol)
+                if not fundamentals:
+                    logger.warning(f"No fundamental data for {symbol}")
+                    continue
+
+                # Perform fundamental analysis
+                fund_analysis = self.fundamental_analyzer.analyze_stock(fundamentals)
+
+                # Fetch price data for technical analysis
+                price_data = self.data_fetcher.get_stock_data(symbol, period="1y", interval="1d")
+                if price_data.empty:
+                    logger.warning(f"No price data for {symbol}")
+                    continue
+
+                # Perform technical analysis
+                tech_analysis = self.technical_analyzer.analyze_stock(price_data, symbol)
+
+                # Combine analyses
+                combined = self._combine_analyses(fundamentals, fund_analysis, tech_analysis)
+
+                if combined and combined['overall_score'] >= min_score:
+                    all_candidates.append(combined)
+                    logger.info(f"{symbol}: Score={combined['overall_score']:.1f}")
+
+                # Rate limiting
+                time.sleep(0.5)
+
+            except Exception as e:
+                logger.error(f"Error analyzing {symbol}: {str(e)}")
+                continue
+
+        if not all_candidates:
+            logger.warning(f"No candidates found in {sector}")
+            return pd.DataFrame()
+
+        df = pd.DataFrame(all_candidates)
+        df = df.sort_values('overall_score', ascending=False)
+
+        logger.info(f"Found {len(df)} companies in {sector} meeting criteria")
+
+        return df
+
+    def screen_indian_market(
+        self,
+        min_score: float = 65.0,
+        max_results: int = 50
+    ) -> pd.DataFrame:
+        """Screen Indian market (NSE) for opportunities.
+
+        Args:
+            min_score: Minimum overall score
+            max_results: Maximum number of results
+
+        Returns:
+            DataFrame with Indian market opportunities
+        """
+        logger.info("Screening Indian market (NSE)...")
+
+        # Override markets to NSE
+        results = self.screen_for_opportunities(
+            markets=['NSE'],
+            min_score=min_score,
+            max_results=max_results
+        )
+
+        return results
+
+    def screen_canadian_market(
+        self,
+        min_score: float = 65.0,
+        max_results: int = 50
+    ) -> pd.DataFrame:
+        """Screen Canadian market (TSX) for opportunities.
+
+        Args:
+            min_score: Minimum overall score
+            max_results: Maximum number of results
+
+        Returns:
+            DataFrame with Canadian market opportunities
+        """
+        logger.info("Screening Canadian market (TSX)...")
+
+        # Override markets to TSX
+        results = self.screen_for_opportunities(
+            markets=['TSX'],
+            min_score=min_score,
+            max_results=max_results
+        )
+
+        return results
+
+    def screen_us_market(
+        self,
+        min_score: float = 65.0,
+        max_results: int = 50
+    ) -> pd.DataFrame:
+        """Screen US market (NASDAQ, NYSE) for opportunities.
+
+        Args:
+            min_score: Minimum overall score
+            max_results: Maximum number of results
+
+        Returns:
+            DataFrame with US market opportunities
+        """
+        logger.info("Screening US market (NASDAQ, NYSE)...")
+
+        # Override markets to US exchanges
+        results = self.screen_for_opportunities(
+            markets=['NASDAQ', 'NYSE'],
+            min_score=min_score,
+            max_results=max_results
+        )
+
+        return results
+
 
 __all__ = ['StockScreener']

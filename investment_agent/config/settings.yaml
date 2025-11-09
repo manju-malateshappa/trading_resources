@@ -39,10 +39,12 @@ strategy:
 # Stock Screening
 screening:
   markets:
-    - "TSX"  # Toronto Stock Exchange
-    - "TSXV"  # TSX Venture Exchange
-    - "NASDAQ"
-    - "NYSE"
+    - "TSX"  # Toronto Stock Exchange (Canada)
+    - "TSXV"  # TSX Venture Exchange (Canada)
+    - "NASDAQ"  # NASDAQ (USA)
+    - "NYSE"  # New York Stock Exchange (USA)
+    - "NSE"  # National Stock Exchange (India)
+    - "BSE"  # Bombay Stock Exchange (India)
 
   focus:
     - "small_cap"  # $300M - $2B
@@ -57,9 +59,30 @@ screening:
     - "Materials"
     - "Energy"
     - "Financials"
+    - "AI & Machine Learning"  # AI-specific
+    - "Cloud Computing"
+    - "Cybersecurity"
+    - "Fintech"
+    - "E-commerce"
+    - "Clean Energy"
 
   exclude_sectors:
     - "Utilities"  # Typically low growth
+
+  # AI-specific screening
+  ai_focus:
+    enabled: true
+    markets:
+      - "USA"  # NVIDIA, Palantir, C3.ai, etc.
+      - "CANADA"  # Shopify, AI startups
+      - "INDIA"  # TCS, Infosys, AI services
+    categories:
+      - "AI Chips"  # NVIDIA, AMD, ARM
+      - "AI Platform"  # Palantir, C3.ai, Microsoft
+      - "AI Software"  # ServiceNow, Salesforce
+      - "AI Services"  # TCS, Infosys, Accenture
+      - "AI Security"  # CrowdStrike, SentinelOne
+      - "AI Healthcare"  # Veeva, Doximity
 
   # Emerging stock criteria
   emerging_criteria:

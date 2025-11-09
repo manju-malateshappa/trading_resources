@@ -77,6 +77,65 @@ def main():
     # Portfolio command
     portfolio_parser = subparsers.add_parser('portfolio', help='View portfolio summary')
 
+    # AI companies command
+    ai_parser = subparsers.add_parser('ai', help='Scan AI companies')
+    ai_parser.add_argument(
+        '--market',
+        choices=['USA', 'CANADA', 'INDIA', 'ALL'],
+        default='ALL',
+        help='Market to scan (default: ALL)'
+    )
+    ai_parser.add_argument(
+        '--min-score',
+        type=float,
+        default=65.0,
+        help='Minimum score (default: 65.0)'
+    )
+
+    # Sector screening command
+    sector_parser = subparsers.add_parser('sector', help='Scan specific sector')
+    sector_parser.add_argument(
+        'sector_name',
+        help='Sector name (e.g., Fintech, "Cloud Computing", "EV & Clean Energy")'
+    )
+    sector_parser.add_argument(
+        '--market',
+        choices=['USA', 'CANADA', 'INDIA', 'ALL'],
+        default='ALL',
+        help='Market to scan (default: ALL)'
+    )
+    sector_parser.add_argument(
+        '--min-score',
+        type=float,
+        default=65.0,
+        help='Minimum score (default: 65.0)'
+    )
+
+    # Market-specific commands
+    india_parser = subparsers.add_parser('india', help='Scan Indian market (NSE)')
+    india_parser.add_argument(
+        '--min-score',
+        type=float,
+        default=65.0,
+        help='Minimum score (default: 65.0)'
+    )
+
+    canada_parser = subparsers.add_parser('canada', help='Scan Canadian market (TSX)')
+    canada_parser.add_argument(
+        '--min-score',
+        type=float,
+        default=65.0,
+        help='Minimum score (default: 65.0)'
+    )
+
+    us_parser = subparsers.add_parser('us', help='Scan US market (NASDAQ, NYSE)')
+    us_parser.add_argument(
+        '--min-score',
+        type=float,
+        default=65.0,
+        help='Minimum score (default: 65.0)'
+    )
+
     # Parse arguments
     args = parser.parse_args()
 
@@ -142,6 +201,66 @@ def main():
 
     elif args.command == 'portfolio':
         display_portfolio_summary(agent)
+
+    elif args.command == 'ai':
+        market = args.market if args.market != 'ALL' else None
+        console.print(f"\n[bold blue]Scanning AI Companies - Market: {args.market}[/bold blue]")
+        ai_companies = agent.stock_screener.screen_ai_companies(
+            market=market,
+            min_score=args.min_score
+        )
+
+        if not ai_companies.empty:
+            display_opportunities_table(ai_companies.head(20))
+        else:
+            console.print("[yellow]No AI companies found meeting criteria[/yellow]")
+
+    elif args.command == 'sector':
+        market = args.market if args.market != 'ALL' else None
+        console.print(f"\n[bold blue]Scanning {args.sector_name} - Market: {args.market}[/bold blue]")
+        sector_companies = agent.stock_screener.screen_sector(
+            sector=args.sector_name,
+            market=market,
+            min_score=args.min_score
+        )
+
+        if not sector_companies.empty:
+            display_opportunities_table(sector_companies.head(20))
+        else:
+            console.print(f"[yellow]No companies found in {args.sector_name}[/yellow]")
+
+    elif args.command == 'india':
+        console.print("\n[bold blue]Scanning Indian Market (NSE)[/bold blue]")
+        indian_stocks = agent.stock_screener.screen_indian_market(
+            min_score=args.min_score
+        )
+
+        if not indian_stocks.empty:
+            display_opportunities_table(indian_stocks.head(20))
+        else:
+            console.print("[yellow]No opportunities found in Indian market[/yellow]")
+
+    elif args.command == 'canada':
+        console.print("\n[bold blue]Scanning Canadian Market (TSX)[/bold blue]")
+        canadian_stocks = agent.stock_screener.screen_canadian_market(
+            min_score=args.min_score
+        )
+
+        if not canadian_stocks.empty:
+            display_opportunities_table(canadian_stocks.head(20))
+        else:
+            console.print("[yellow]No opportunities found in Canadian market[/yellow]")
+
+    elif args.command == 'us':
+        console.print("\n[bold blue]Scanning US Market (NASDAQ, NYSE)[/bold blue]")
+        us_stocks = agent.stock_screener.screen_us_market(
+            min_score=args.min_score
+        )
+
+        if not us_stocks.empty:
+            display_opportunities_table(us_stocks.head(20))
+        else:
+            console.print("[yellow]No opportunities found in US market[/yellow]")
 
 
 def display_opportunities_table(df):
