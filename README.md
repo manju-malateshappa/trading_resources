@@ -142,6 +142,292 @@ evaluation = agent.evaluate_buy('LSPD.TO')
 results = agent.daily_routine()
 ```
 
+## 🧪 Local Testing
+
+### Prerequisites
+
+- Python 3.8 or higher
+- Git
+- Internet connection (for fetching stock data)
+
+### Setup Steps
+
+1. **Clone the repository**
+```bash
+git clone <your-repo-url>
+cd trading_resources
+
+# Switch to the feature branch (if needed)
+git checkout claude/build-investment-agent-011CUwsGyMhhqaTsbP8T4qVS
+```
+
+2. **Create a virtual environment (recommended)**
+```bash
+# Create virtual environment
+python -m venv venv
+
+# Activate it
+# On macOS/Linux:
+source venv/bin/activate
+
+# On Windows:
+venv\Scripts\activate
+```
+
+3. **Install dependencies**
+```bash
+# Install core dependencies first
+pip install pandas numpy yfinance rich loguru pyyaml python-dotenv requests scikit-learn
+
+# Or try installing from requirements.txt
+# Note: Some optional dependencies like pandas-ta or ta-lib may fail
+pip install -r requirements.txt
+```
+
+4. **Set up API keys (optional but recommended)**
+
+Create a `.env` file in the project root:
+```bash
+# .env file
+ALPHA_VANTAGE_API_KEY=your_key_here
+FINNHUB_API_KEY=your_key_here
+FRED_API_KEY=your_key_here
+NEWS_API_KEY=your_key_here
+```
+
+**Get free API keys from:**
+- Alpha Vantage: https://www.alphavantage.co/support/#api-key
+- Finnhub: https://finnhub.io/register
+- FRED: https://fred.stlouisfed.org/docs/api/api_key.html
+- NewsAPI: https://newsapi.org/register
+
+**Note:** The agent will work with just `yfinance` (no API keys needed), but with reduced functionality.
+
+### Testing New Data Management Features
+
+#### Test the List Command
+```bash
+# List all stocks numbered by country
+python main.py list
+
+# List stocks by specific market
+python main.py list --market USA
+python main.py list --market CANADA
+python main.py list --market INDIA
+
+# Show only cached stocks
+python main.py list --cached
+```
+
+#### Test the Help System
+```bash
+# Show all commands
+python main.py help
+
+# Show specific command help
+python main.py help list
+python main.py help refresh
+python main.py help cache
+python main.py help analyze
+python main.py help fav
+```
+
+#### Test the Refresh Command
+```bash
+# Refresh specific stocks by symbol
+python main.py refresh NVDA AAPL MSFT
+
+# Note: First refresh will be slow as it fetches data
+# Subsequent refreshes within 1 hour will be skipped unless forced
+
+# Refresh specific numbered stocks (after running list)
+python main.py refresh --numbers 1,2,3
+
+# Refresh a range of stocks
+python main.py refresh --numbers 1-10
+
+# Refresh only stale data (>24 hours old)
+python main.py refresh --stale
+
+# Refresh all stocks in a market
+python main.py refresh --market USA
+
+# Force refresh even if recently cached
+python main.py refresh --numbers 1-10 --force
+```
+
+#### Test Cache Management
+```bash
+# View cache statistics
+python main.py cache stats
+
+# Clear specific stock cache
+python main.py cache clear NVDA
+
+# Clear all cache (will prompt for confirmation)
+python main.py cache clear
+```
+
+### Testing Other Core Features
+
+#### Analyze Individual Stocks
+```bash
+# US stocks
+python main.py analyze NVDA
+python main.py analyze AAPL
+python main.py analyze MSFT
+
+# Indian stocks (add .NS suffix)
+python main.py analyze TCS.NS
+python main.py analyze INFY.NS
+
+# Canadian stocks (add .TO suffix)
+python main.py analyze SHOP.TO
+python main.py analyze LSPD.TO
+```
+
+#### Test Favorites Management
+```bash
+# Add favorites to different categories
+python main.py fav add NVDA ai
+python main.py fav add PLTR ai
+python main.py fav add SHOP.TO ecommerce
+python main.py fav add TCS.NS indian-it
+
+# List all favorites
+python main.py fav show
+
+# List favorites by category
+python main.py fav show ai
+
+# Scan favorites for signals
+python main.py fav scan
+
+# View all categories
+python main.py fav categories
+
+# Remove a favorite
+python main.py fav remove NVDA
+
+# Export favorites to file
+python main.py fav export favorites.json
+```
+
+#### Test Market Scanning
+```bash
+# Scan AI companies
+python main.py ai
+
+# Scan by sector
+python main.py sector cloud
+python main.py sector fintech
+
+# Scan by country
+python main.py us
+python main.py canada
+python main.py india
+
+# Get top opportunities
+python main.py top 10
+```
+
+### Quick Test Workflow
+
+Here's a quick test sequence to verify everything works:
+
+```bash
+# 1. Check help system
+python main.py help
+
+# 2. List stocks to see what's available
+python main.py list --market USA | head -50
+
+# 3. Refresh a few stocks (note their numbers from list output)
+python main.py refresh --numbers 1,2,3
+
+# 4. Check cache statistics
+python main.py cache stats
+
+# 5. Analyze a stock
+python main.py analyze NVDA
+
+# 6. Add to favorites
+python main.py fav add NVDA ai
+
+# 7. View favorites
+python main.py fav show
+
+# 8. Get quick info
+python main.py info NVDA
+
+# 9. Get investment score
+python main.py score NVDA
+```
+
+### Troubleshooting Local Testing
+
+#### Module Import Errors
+```bash
+# Make sure you're in the project directory
+cd trading_resources
+
+# Verify Python can find modules
+python -m py_compile main.py
+
+# Run with python -m if imports fail
+python -m main help
+```
+
+#### yfinance Slow or Failing
+- yfinance is rate-limited by Yahoo Finance
+- Wait a few seconds between requests
+- The `--force` flag bypasses cache but hits the API harder
+- Use `--stale` to only refresh old data (more efficient)
+
+#### Database Files
+The agent automatically creates SQLite databases in `investment_agent/data/`:
+- `favorites.db` - Your favorites list
+- `cache.db` - Stock data cache
+- `portfolio.db` - Portfolio data
+
+These are created automatically on first use. Don't commit them to git (they're in `.gitignore`).
+
+#### Missing Dependencies
+If a specific package fails to install:
+```bash
+# Install individually
+pip install pandas
+pip install numpy
+pip install yfinance
+pip install rich
+pip install loguru
+
+# Some optional packages may fail (ta-lib, pandas-ta)
+# The agent will still work without them
+```
+
+### Minimal Syntax Check (No Dependencies)
+
+If you just want to verify code structure without running:
+```bash
+# Check syntax of all new files
+python -m py_compile main.py
+python -m py_compile investment_agent/utils/data_cache.py
+python -m py_compile investment_agent/utils/help_system.py
+python -m py_compile investment_agent/data/company_database.py
+
+echo "✓ All files have valid Python syntax"
+```
+
+### Expected Test Output
+
+When testing, you should see:
+- **Rich formatted tables** with colored output
+- **Cache status indicators**: Fresh (green), Aged (yellow), Stale (red)
+- **Progress spinners** during data refresh
+- **Success/failure counts** after operations
+- **Helpful tips** at the bottom of outputs
+
 ## 📊 Investment Criteria
 
 ### Entry Criteria (Configurable)
