@@ -8,14 +8,17 @@ focused on identifying high-growth small/mid-cap stocks for 100-200% returns.
 
 import argparse
 import sys
+import time
 from pathlib import Path
+from datetime import datetime
+from typing import List
 
 # Add the project directory to path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from investment_agent.agent import InvestmentAgent
 from investment_agent.utils.logger import logger
-from investment_agent.utils import HelpSystem, favorites_manager
+from investment_agent.utils import HelpSystem, favorites_manager, data_cache
 from investment_agent.data import company_db
 from rich.console import Console
 from rich.table import Table
@@ -177,6 +180,27 @@ def main():
 
     fav_export_parser = fav_subparsers.add_parser('export', help='Export favorites to file')
     fav_export_parser.add_argument('filepath', help='Output file path')
+
+    # List stocks command
+    list_parser = subparsers.add_parser('list', help='List all stocks by country')
+    list_parser.add_argument('--market', choices=['USA', 'CANADA', 'INDIA', 'ALL'], default='ALL', help='Filter by market')
+    list_parser.add_argument('--cached', action='store_true', help='Show only cached stocks')
+
+    # Refresh data commands
+    refresh_parser = subparsers.add_parser('refresh', help='Refresh stock data')
+    refresh_parser.add_argument('symbols', nargs='*', help='Specific symbols to refresh (or leave empty for all)')
+    refresh_parser.add_argument('--numbers', help='Refresh by numbers from list (e.g., 1,5,10-15)')
+    refresh_parser.add_argument('--market', choices=['USA', 'CANADA', 'INDIA'], help='Refresh all in market')
+    refresh_parser.add_argument('--stale', action='store_true', help='Refresh only stale data (>24h)')
+    refresh_parser.add_argument('--force', action='store_true', help='Force refresh even if recent')
+
+    # Cache management
+    cache_parser = subparsers.add_parser('cache', help='Manage data cache')
+    cache_subparsers = cache_parser.add_subparsers(dest='cache_command', help='Cache commands')
+
+    cache_stats_parser = cache_subparsers.add_parser('stats', help='Show cache statistics')
+    cache_clear_parser = cache_subparsers.add_parser('clear', help='Clear cache')
+    cache_clear_parser.add_argument('symbol', nargs='?', help='Specific symbol to clear')
 
     # Parse arguments
     args = parser.parse_args()
@@ -345,6 +369,285 @@ def main():
 
     elif args.command == 'fav':
         handle_favorites_command(agent, args)
+
+    elif args.command == 'list':
+        handle_list_command(args)
+
+    elif args.command == 'refresh':
+        handle_refresh_command(agent, args)
+
+    elif args.command == 'cache':
+        handle_cache_command(args)
+
+
+def handle_list_command(args):
+    """Handle list stocks command."""
+    console.print("\n[bold cyan]📊 Stock Database - Company List[/bold cyan]\n")
+
+    # Get symbols from company database
+    if args.market == 'ALL':
+        usa_symbols = company_db.get_all_symbols(market='USA')
+        canada_symbols = company_db.get_all_symbols(market='CANADA')
+        india_symbols = company_db.get_all_symbols(market='INDIA')
+
+        all_stocks = []
+        for symbol in usa_symbols:
+            info = company_db.get_company_info(symbol)
+            all_stocks.append({**info, 'symbol': symbol, 'market': 'USA'})
+
+        for symbol in canada_symbols:
+            info = company_db.get_company_info(symbol)
+            all_stocks.append({**info, 'symbol': symbol, 'market': 'CANADA'})
+
+        for symbol in india_symbols:
+            info = company_db.get_company_info(symbol)
+            all_stocks.append({**info, 'symbol': symbol, 'market': 'INDIA'})
+
+    else:
+        symbols = company_db.get_all_symbols(market=args.market)
+        all_stocks = []
+        for symbol in symbols:
+            info = company_db.get_company_info(symbol)
+            all_stocks.append({**info, 'symbol': symbol, 'market': args.market})
+
+    # Filter by cached if requested
+    if args.cached:
+        cached_symbols = {item['symbol'] for item in data_cache.get_all_cached_symbols()}
+        all_stocks = [s for s in all_stocks if s['symbol'] in cached_symbols]
+
+    # Group by market
+    markets = {}
+    for stock in all_stocks:
+        market = stock.get('market', 'Unknown')
+        if market not in markets:
+            markets[market] = []
+        markets[market].append(stock)
+
+    # Display by market
+    total_count = 0
+    number = 1
+
+    for market in sorted(markets.keys()):
+        stocks = markets[market]
+
+        table = Table(title=f"{market} Stocks", show_header=True, header_style="bold magenta")
+        table.add_column("#", style="dim", width=5)
+        table.add_column("Symbol", style="cyan", width=12)
+        table.add_column("Name", style="white", width=35)
+        table.add_column("Category", style="yellow", width=18)
+        table.add_column("Status", style="green", width=12)
+
+        for stock in sorted(stocks, key=lambda x: x['symbol']):
+            # Check if cached
+            cached_data = data_cache.get_cached_data(stock['symbol'])
+            if cached_data:
+                cache_age = (datetime.now() - datetime.fromisoformat(cached_data['cache_updated'])).total_seconds() / 3600
+                if cache_age < 1:
+                    status = "[green]Fresh[/green]"
+                elif cache_age < 24:
+                    status = f"[yellow]{cache_age:.0f}h old[/yellow]"
+                else:
+                    status = "[red]Stale[/red]"
+            else:
+                status = "[dim]Not cached[/dim]"
+
+            table.add_row(
+                str(number),
+                stock['symbol'],
+                stock.get('name', '')[:35],
+                stock.get('category', '')[:18],
+                status
+            )
+            number += 1
+
+        console.print(table)
+        console.print()
+        total_count += len(stocks)
+
+    console.print(f"[bold]Total: {total_count} stocks[/bold]")
+    console.print("\n[dim]💡 Tip: Use [cyan]refresh --numbers 1,5,10-15[/cyan] to refresh specific stocks[/dim]\n")
+
+
+def handle_refresh_command(agent, args):
+    """Handle refresh data command."""
+    from datetime import datetime
+
+    console.print("\n[bold cyan]🔄 Refreshing Stock Data[/bold cyan]\n")
+
+    symbols_to_refresh = []
+
+    # Determine which symbols to refresh
+    if args.numbers:
+        # Refresh by numbers from list
+        symbols_to_refresh = get_symbols_by_numbers(args.numbers)
+
+    elif args.market:
+        # Refresh all in market
+        symbols_to_refresh = company_db.get_all_symbols(market=args.market)
+        console.print(f"[yellow]Refreshing all {len(symbols_to_refresh)} stocks in {args.market}...[/yellow]\n")
+
+    elif args.stale:
+        # Refresh only stale data
+        symbols_to_refresh = data_cache.get_stale_symbols(max_age_hours=24)
+        console.print(f"[yellow]Refreshing {len(symbols_to_refresh)} stale stocks...[/yellow]\n")
+
+    elif args.symbols:
+        # Specific symbols provided
+        symbols_to_refresh = [s.upper() for s in args.symbols]
+
+    else:
+        # Refresh all
+        symbols_to_refresh = company_db.get_all_symbols()
+        console.print(f"[yellow]⚠️  Refreshing ALL {len(symbols_to_refresh)} stocks - this may take a while![/yellow]\n")
+
+    if not symbols_to_refresh:
+        console.print("[yellow]No symbols to refresh[/yellow]")
+        return
+
+    # Perform refresh
+    start_time = time.time()
+    successful = 0
+    failed = 0
+
+    with console.status("[bold green]Refreshing data...") as status:
+        for i, symbol in enumerate(symbols_to_refresh, 1):
+            # Skip if recently cached and not forcing
+            if not args.force and not data_cache.is_stale(symbol, max_age_hours=1):
+                status.update(f"[dim]Skipping {symbol} (recently cached)[/dim]")
+                successful += 1
+                continue
+
+            status.update(f"[green]Refreshing {i}/{len(symbols_to_refresh)}: {symbol}[/green]")
+
+            try:
+                # Fetch fresh data
+                fundamentals = agent.data_fetcher.get_fundamental_data(symbol)
+
+                if fundamentals and fundamentals.get('current_price'):
+                    # Cache the data
+                    data_cache.cache_data(
+                        symbol,
+                        fundamentals,
+                        name=fundamentals.get('name'),
+                        market=fundamentals.get('market', 'Unknown')
+                    )
+                    successful += 1
+                else:
+                    logger.warning(f"No data returned for {symbol}")
+                    failed += 1
+
+                # Rate limiting
+                time.sleep(0.5)
+
+            except Exception as e:
+                logger.error(f"Error refreshing {symbol}: {str(e)}")
+                failed += 1
+
+    duration = time.time() - start_time
+
+    # Record refresh
+    data_cache.record_refresh(len(symbols_to_refresh), successful, failed, duration)
+
+    # Display results
+    console.print(f"\n[bold green]✓ Refresh Complete![/bold green]")
+    console.print(f"  Total: {len(symbols_to_refresh)}")
+    console.print(f"  [green]Successful: {successful}[/green]")
+    console.print(f"  [red]Failed: {failed}[/red]")
+    console.print(f"  Duration: {duration:.1f}s")
+    console.print()
+
+
+def get_symbols_by_numbers(numbers_str: str) -> List[str]:
+    """Parse number ranges and return symbols.
+
+    Args:
+        numbers_str: e.g., "1,5,10-15"
+
+    Returns:
+        List of symbols
+    """
+    # Get all symbols with their numbers
+    all_stocks = []
+    number = 1
+
+    for market in ['USA', 'CANADA', 'INDIA']:
+        symbols = company_db.get_all_symbols(market=market)
+        for symbol in sorted(symbols):
+            all_stocks.append((number, symbol))
+            number += 1
+
+    # Parse numbers
+    selected_numbers = set()
+
+    for part in numbers_str.split(','):
+        part = part.strip()
+        if '-' in part:
+            # Range like "10-15"
+            start, end = part.split('-')
+            selected_numbers.update(range(int(start), int(end) + 1))
+        else:
+            # Single number
+            selected_numbers.add(int(part))
+
+    # Get symbols
+    selected_symbols = []
+    for num, symbol in all_stocks:
+        if num in selected_numbers:
+            selected_symbols.append(symbol)
+
+    console.print(f"[green]Selected {len(selected_symbols)} stocks: {', '.join(selected_symbols[:10])}{('...' if len(selected_symbols) > 10 else '')}[/green]\n")
+
+    return selected_symbols
+
+
+def handle_cache_command(args):
+    """Handle cache management commands."""
+    if not args.cache_command:
+        # Show cache stats
+        args.cache_command = 'stats'
+
+    if args.cache_command == 'stats':
+        stats = data_cache.get_cache_stats()
+
+        console.print("\n[bold cyan]📦 Cache Statistics[/bold cyan]\n")
+
+        table = Table(show_header=False, box=None)
+        table.add_column("Metric", style="yellow")
+        table.add_column("Value", style="white")
+
+        table.add_row("Total Cached", str(stats['total']))
+        table.add_row("Fresh (<1h)", f"[green]{stats['fresh']}[/green]")
+        table.add_row("Aged (1-24h)", f"[yellow]{stats['aged']}[/yellow]")
+        table.add_row("Stale (>24h)", f"[red]{stats['stale']}[/red]")
+
+        console.print(table)
+
+        if stats['by_market']:
+            console.print("\n[bold]By Market:[/bold]")
+            for market, count in stats['by_market'].items():
+                console.print(f"  {market}: {count}")
+
+        # Show recent refresh history
+        history = data_cache.get_refresh_history(limit=5)
+        if history:
+            console.print("\n[bold]Recent Refreshes:[/bold]")
+            for record in history:
+                console.print(f"  {record['date'][:19]}: {record['successful']}/{record['total']} successful ({record['duration']:.1f}s)")
+
+        console.print()
+
+    elif args.cache_command == 'clear':
+        if args.symbol:
+            count = data_cache.clear_cache(symbol=args.symbol)
+            console.print(f"[green]✓[/green] Cleared cache for {args.symbol}")
+        else:
+            console.print("[yellow]⚠️  This will clear ALL cached data. Are you sure? (y/N)[/yellow]")
+            response = input().strip().lower()
+            if response == 'y':
+                count = data_cache.clear_cache()
+                console.print(f"[green]✓[/green] Cleared {count} cached records")
+            else:
+                console.print("[yellow]Cancelled[/yellow]")
 
 
 def handle_favorites_command(agent, args):

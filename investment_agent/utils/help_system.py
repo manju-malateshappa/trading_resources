@@ -27,6 +27,7 @@ class HelpSystem:
         HelpSystem._show_screening_commands()
         HelpSystem._show_portfolio_commands()
         HelpSystem._show_favorites_commands()
+        HelpSystem._show_data_commands()
         HelpSystem._show_utility_commands()
 
         console.print("\n[bold yellow]💡 Tips:[/bold yellow]")
@@ -134,6 +135,26 @@ class HelpSystem:
         table.add_row("version", "Show version information")
         table.add_row("status", "Show system status")
         table.add_row("quick", "Quick start guide")
+
+        console.print(table)
+        console.print()
+
+    @staticmethod
+    def _show_data_commands():
+        """Show data management commands."""
+        table = Table(title="💾 DATA MANAGEMENT", show_header=True, header_style="bold magenta")
+        table.add_column("Command", style="cyan", width=30)
+        table.add_column("Description", style="white")
+
+        table.add_row("list", "List all stocks numbered by country")
+        table.add_row("list --market USA", "List stocks from specific market")
+        table.add_row("list --cached", "Show only cached stocks")
+        table.add_row("refresh", "Refresh all stock data")
+        table.add_row("refresh --stale", "Refresh only stale data (>24h)")
+        table.add_row("refresh --numbers 1,5,10-15", "Refresh specific numbered stocks")
+        table.add_row("refresh --market USA", "Refresh all stocks in market")
+        table.add_row("cache stats", "Show cache statistics")
+        table.add_row("cache clear", "Clear all cached data")
 
         console.print(table)
         console.print()
@@ -272,6 +293,81 @@ Run daily routine:
 
 [bold yellow]Example:[/bold yellow]
   python main.py daily
+""",
+            'list': """
+[bold cyan]list [--market MARKET] [--cached][/bold cyan]
+
+List all stocks numbered by country with cache status.
+
+[bold yellow]Options:[/bold yellow]
+  --market USA|CANADA|INDIA|ALL  Filter by market (default: ALL)
+  --cached                       Show only cached stocks
+
+[bold yellow]Output:[/bold yellow]
+  • Sequential numbering across all markets
+  • Stock symbol, name, and category
+  • Cache status (Fresh, Aged, Stale, Not cached)
+
+[bold yellow]Examples:[/bold yellow]
+  python main.py list
+  python main.py list --market USA
+  python main.py list --cached
+
+[bold yellow]Use Case:[/bold yellow]
+  Use the numbers shown to refresh specific stocks:
+  python main.py refresh --numbers 1,5,10-15
+""",
+            'refresh': """
+[bold cyan]refresh [symbols] [--numbers NUMS] [--market MARKET] [--stale] [--force][/bold cyan]
+
+Refresh stock data to keep cache up-to-date.
+
+[bold yellow]Options:[/bold yellow]
+  symbols                        Specific symbols to refresh (e.g., NVDA TCS.NS)
+  --numbers 1,5,10-15           Refresh by numbers from list command
+  --market USA|CANADA|INDIA     Refresh all stocks in market
+  --stale                       Refresh only stale data (>24h old)
+  --force                       Force refresh even if recently cached
+
+[bold yellow]Examples:[/bold yellow]
+  python main.py refresh                    # Refresh all stocks
+  python main.py refresh --stale            # Refresh only stale data
+  python main.py refresh --market USA       # Refresh all US stocks
+  python main.py refresh --numbers 1,5,10-15  # Refresh specific numbered stocks
+  python main.py refresh NVDA PLTR          # Refresh specific symbols
+  python main.py refresh --numbers 1-10 --force  # Force refresh first 10
+
+[bold yellow]Performance:[/bold yellow]
+  • Fresh data (<1h): Skipped unless --force
+  • Aged data (1-24h): Refreshed by default
+  • Stale data (>24h): Always refreshed
+  • Rate limiting: 0.5s delay between stocks
+""",
+            'cache': """
+[bold cyan]cache stats[/bold cyan]
+[bold cyan]cache clear [symbol][/bold cyan]
+
+Manage data cache and view statistics.
+
+[bold yellow]Commands:[/bold yellow]
+  stats     Show cache statistics and refresh history
+  clear     Clear cached data (all or specific symbol)
+
+[bold yellow]Statistics Include:[/bold yellow]
+  • Total cached stocks
+  • Fresh (<1h), Aged (1-24h), Stale (>24h) counts
+  • Breakdown by market
+  • Recent refresh history
+
+[bold yellow]Examples:[/bold yellow]
+  python main.py cache stats        # Show cache statistics
+  python main.py cache clear        # Clear all cache (prompts for confirmation)
+  python main.py cache clear NVDA   # Clear cache for specific stock
+
+[bold yellow]Use Cases:[/bold yellow]
+  • Monitor cache health before/after refresh
+  • Clear stale data to force fresh fetches
+  • Track refresh history and performance
 """,
         }
 

@@ -283,6 +283,77 @@ python main.py daily
 # 4. Show position alerts
 ```
 
+## 💾 Data Management Commands
+
+### List Stocks
+```bash
+# List all stocks numbered by country
+python main.py list
+
+# List stocks from specific market
+python main.py list --market USA
+python main.py list --market CANADA
+python main.py list --market INDIA
+
+# Show only cached stocks
+python main.py list --cached
+
+# Output shows:
+# - Sequential numbering (1, 2, 3...)
+# - Symbol, name, category
+# - Cache status (Fresh, Aged, Stale, Not cached)
+```
+
+### Refresh Data
+```bash
+# Refresh all stock data
+python main.py refresh
+
+# Refresh only stale data (>24 hours old)
+python main.py refresh --stale
+
+# Refresh by numbers from list command
+python main.py refresh --numbers 1,5,10-15
+python main.py refresh --numbers 1-10
+
+# Refresh all stocks in a market
+python main.py refresh --market USA
+python main.py refresh --market CANADA
+python main.py refresh --market INDIA
+
+# Refresh specific symbols
+python main.py refresh NVDA PLTR
+python main.py refresh TCS.NS INFY.NS
+python main.py refresh SHOP.TO LSPD.TO
+
+# Force refresh even if recently cached
+python main.py refresh --numbers 1-10 --force
+
+# Performance notes:
+# - Fresh data (<1h): Skipped unless --force
+# - Aged data (1-24h): Refreshed by default
+# - Stale data (>24h): Always refreshed
+# - Rate limiting: 0.5s delay between stocks
+```
+
+### Cache Management
+```bash
+# Show cache statistics
+python main.py cache stats
+
+# Shows:
+# - Total cached stocks
+# - Fresh (<1h), Aged (1-24h), Stale (>24h) counts
+# - Breakdown by market
+# - Recent refresh history
+
+# Clear all cached data (with confirmation)
+python main.py cache clear
+
+# Clear cache for specific stock
+python main.py cache clear NVDA
+```
+
 ## 🔧 Utility Commands
 
 ### Help
@@ -297,6 +368,9 @@ python main.py help sector
 python main.py help fav
 python main.py help buy
 python main.py help recommend
+python main.py help list
+python main.py help refresh
+python main.py help cache
 ```
 
 ### Quick Start
@@ -317,16 +391,19 @@ python main.py version
 
 **Morning Routine:**
 ```bash
-# 1. Check your portfolio
+# 1. Refresh stale data
+python main.py refresh --stale
+
+# 2. Check your portfolio
 python main.py portfolio
 
-# 2. Run daily scan
+# 3. Run daily scan
 python main.py daily
 
-# 3. Check favorites for signals
+# 4. Check favorites for signals
 python main.py fav scan
 
-# 4. Look at top opportunities
+# 5. Look at top opportunities
 python main.py top 10
 ```
 
@@ -400,6 +477,33 @@ python main.py fav show watchlist
 
 # Scan watchlist daily
 python main.py fav scan
+```
+
+### Data Management Workflow
+```bash
+# 1. List all stocks to see what's available
+python main.py list
+
+# 2. Check cache status
+python main.py cache stats
+
+# 3. Refresh specific stocks by number
+python main.py list --market USA          # Note the numbers
+python main.py refresh --numbers 1,5,10   # Refresh those specific stocks
+
+# 4. Refresh stale data only (efficient)
+python main.py refresh --stale
+
+# 5. Refresh entire market when needed
+python main.py refresh --market INDIA
+
+# 6. Monitor cache health
+python main.py cache stats
+
+# Weekly full refresh
+python main.py refresh --market USA
+python main.py refresh --market CANADA
+python main.py refresh --market INDIA
 ```
 
 ## 🎯 Tips & Tricks
@@ -512,6 +616,17 @@ daily                       # Daily routine
 # Recommendations
 recommend                   # Get recommendations
 recommend --focus <type>    # Focused recommendations
+
+# Data Management
+list                        # List all stocks numbered by country
+list --market <market>      # List stocks from specific market
+list --cached               # Show only cached stocks
+refresh                     # Refresh all stock data
+refresh --stale             # Refresh only stale data
+refresh --numbers 1,5,10-15 # Refresh specific numbered stocks
+refresh --market <market>   # Refresh all in market
+cache stats                 # Show cache statistics
+cache clear                 # Clear cache
 ```
 
 ## 🆘 Need Help?
