@@ -15,6 +15,8 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from investment_agent.agent import InvestmentAgent
 from investment_agent.utils.logger import logger
+from investment_agent.utils import HelpSystem, favorites_manager
+from investment_agent.data import company_db
 from rich.console import Console
 from rich.table import Table
 
@@ -136,14 +138,70 @@ def main():
         help='Minimum score (default: 65.0)'
     )
 
+    # Help commands
+    help_parser = subparsers.add_parser('help', help='Show help information')
+    help_parser.add_argument('topic', nargs='?', help='Specific command to get help on')
+
+    quick_parser = subparsers.add_parser('quick', help='Quick start guide')
+    version_parser = subparsers.add_parser('version', help='Show version information')
+
+    # Quick info commands
+    info_parser = subparsers.add_parser('info', help='Quick stock information')
+    info_parser.add_argument('symbol', help='Stock ticker symbol')
+
+    score_parser = subparsers.add_parser('score', help='Show stock score breakdown')
+    score_parser.add_argument('symbol', help='Stock ticker symbol')
+
+    # Top stocks command
+    top_parser = subparsers.add_parser('top', help='Show top N opportunities')
+    top_parser.add_argument('count', type=int, default=10, nargs='?', help='Number of stocks (default: 10)')
+    top_parser.add_argument('--market', choices=['USA', 'CANADA', 'INDIA'], help='Filter by market')
+
+    # Favorites management
+    fav_parser = subparsers.add_parser('fav', help='Manage favorite stocks')
+    fav_subparsers = fav_parser.add_subparsers(dest='fav_command', help='Favorites commands')
+
+    fav_add_parser = fav_subparsers.add_parser('add', help='Add stock to favorites')
+    fav_add_parser.add_argument('symbol', help='Stock ticker symbol')
+    fav_add_parser.add_argument('category', nargs='?', default='general', help='Category (default: general)')
+
+    fav_remove_parser = fav_subparsers.add_parser('remove', help='Remove stock from favorites')
+    fav_remove_parser.add_argument('symbol', help='Stock ticker symbol')
+
+    fav_show_parser = fav_subparsers.add_parser('show', help='Show favorites')
+    fav_show_parser.add_argument('category', nargs='?', help='Category filter (optional)')
+
+    fav_categories_parser = fav_subparsers.add_parser('categories', help='List all categories')
+
+    fav_scan_parser = fav_subparsers.add_parser('scan', help='Scan all favorites for signals')
+
+    fav_export_parser = fav_subparsers.add_parser('export', help='Export favorites to file')
+    fav_export_parser.add_argument('filepath', help='Output file path')
+
     # Parse arguments
     args = parser.parse_args()
 
     if not args.command:
-        parser.print_help()
+        HelpSystem.show_all()
         return
 
-    # Initialize agent
+    # Handle help commands without initializing agent
+    if args.command == 'help':
+        if args.topic:
+            HelpSystem.show_command_help(args.topic)
+        else:
+            HelpSystem.show_all()
+        return
+
+    if args.command == 'quick':
+        HelpSystem.show_quick_start()
+        return
+
+    if args.command == 'version':
+        HelpSystem.show_version()
+        return
+
+    # Initialize agent for commands that need it
     console.print("[bold green]Initializing Investment Agent...[/bold green]")
     agent = InvestmentAgent()
 
@@ -261,6 +319,216 @@ def main():
             display_opportunities_table(us_stocks.head(20))
         else:
             console.print("[yellow]No opportunities found in US market[/yellow]")
+
+    elif args.command == 'info':
+        display_quick_info(agent, args.symbol)
+
+    elif args.command == 'score':
+        display_score_breakdown(agent, args.symbol)
+
+    elif args.command == 'top':
+        console.print(f"\n[bold blue]Top {args.count} Opportunities[/bold blue]")
+        if args.market:
+            screener_methods = {
+                'USA': agent.stock_screener.screen_us_market,
+                'CANADA': agent.stock_screener.screen_canadian_market,
+                'INDIA': agent.stock_screener.screen_indian_market,
+            }
+            opportunities = screener_methods[args.market]()
+        else:
+            opportunities = agent.scan_market()
+
+        if not opportunities.empty:
+            display_opportunities_table(opportunities.head(args.count))
+        else:
+            console.print("[yellow]No opportunities found[/yellow]")
+
+    elif args.command == 'fav':
+        handle_favorites_command(agent, args)
+
+
+def handle_favorites_command(agent, args):
+    """Handle favorites management commands."""
+    if not args.fav_command:
+        # Show all favorites
+        favorites = favorites_manager.get_all()
+        if favorites:
+            display_favorites(favorites)
+        else:
+            console.print("[yellow]No favorites yet. Add some with: fav add <ticker>[/yellow]")
+        return
+
+    if args.fav_command == 'add':
+        # Get company info
+        info = company_db.get_company_info(args.symbol)
+        name = info.get('name', args.symbol)
+
+        if favorites_manager.add(args.symbol, category=args.category, name=name):
+            console.print(f"[green]✓[/green] Added {args.symbol} to favorites (category: {args.category})")
+        else:
+            console.print(f"[yellow]{args.symbol} already in favorites[/yellow]")
+
+    elif args.fav_command == 'remove':
+        if favorites_manager.remove(args.symbol):
+            console.print(f"[green]✓[/green] Removed {args.symbol} from favorites")
+        else:
+            console.print(f"[yellow]{args.symbol} not found in favorites[/yellow]")
+
+    elif args.fav_command == 'show':
+        favorites = favorites_manager.get_all(category=args.category)
+        if favorites:
+            category_name = args.category if args.category else "All"
+            console.print(f"\n[bold cyan]Favorites - {category_name}[/bold cyan]\n")
+            display_favorites(favorites)
+        else:
+            console.print(f"[yellow]No favorites in category: {args.category}[/yellow]")
+
+    elif args.fav_command == 'categories':
+        categories = favorites_manager.get_categories()
+        display_categories(categories)
+
+    elif args.fav_command == 'scan':
+        console.print("\n[bold blue]Scanning Favorites for Signals...[/bold blue]\n")
+        symbols = favorites_manager.get_symbols()
+
+        if not symbols:
+            console.print("[yellow]No favorites to scan[/yellow]")
+            return
+
+        results = []
+        for symbol in symbols:
+            try:
+                console.print(f"Analyzing {symbol}...")
+                evaluation = agent.evaluate_buy(symbol)
+                if evaluation.get('action') == 'BUY':
+                    results.append(evaluation)
+            except Exception as e:
+                logger.error(f"Error analyzing {symbol}: {str(e)}")
+
+        if results:
+            console.print(f"\n[bold green]Found {len(results)} BUY signals in favorites:[/bold green]\n")
+            for result in results:
+                console.print(f"  • {result['symbol']}: Score={result['overall_score']:.1f}")
+        else:
+            console.print("[yellow]No buy signals found in favorites[/yellow]")
+
+    elif args.fav_command == 'export':
+        if args.filepath.endswith('.json'):
+            favorites_manager.export_to_json(args.filepath)
+        else:
+            favorites_manager.export_to_csv(args.filepath)
+        console.print(f"[green]✓[/green] Exported favorites to {args.filepath}")
+
+
+def display_quick_info(agent, symbol):
+    """Display quick stock information."""
+    fundamentals = agent.data_fetcher.get_fundamental_data(symbol)
+
+    if not fundamentals:
+        console.print(f"[red]Could not fetch data for {symbol}[/red]")
+        return
+
+    console.print(f"\n[bold cyan]{fundamentals.get('name', symbol)}[/bold cyan]")
+    console.print(f"[dim]{symbol}  |  {fundamentals.get('sector', 'N/A')}[/dim]\n")
+
+    table = Table(show_header=False, box=None)
+    table.add_column("Metric", style="yellow")
+    table.add_column("Value", style="white")
+
+    table.add_row("Current Price", f"${fundamentals.get('current_price', 0):.2f}")
+    table.add_row("Market Cap", f"${fundamentals.get('market_cap', 0):,.0f}")
+    table.add_row("P/E Ratio", f"{fundamentals.get('pe_ratio', 0):.2f}" if fundamentals.get('pe_ratio') else "N/A")
+    table.add_row("Revenue Growth", f"{fundamentals.get('revenue_growth', 0):.1%}" if fundamentals.get('revenue_growth') else "N/A")
+    table.add_row("Profit Margin", f"{fundamentals.get('profit_margin', 0):.1%}" if fundamentals.get('profit_margin') else "N/A")
+
+    console.print(table)
+    console.print()
+
+
+def display_score_breakdown(agent, symbol):
+    """Display score breakdown for a stock."""
+    console.print(f"\n[bold blue]Analyzing {symbol}...[/bold blue]\n")
+
+    fundamentals = agent.data_fetcher.get_fundamental_data(symbol)
+    if not fundamentals:
+        console.print(f"[red]Could not fetch data for {symbol}[/red]")
+        return
+
+    fund_analysis = agent.fundamental_analyzer.analyze_stock(fundamentals)
+
+    console.print(f"[bold cyan]{fundamentals.get('name', symbol)}[/bold cyan]")
+    console.print(f"[dim]{symbol}[/dim]\n")
+
+    table = Table(title="Score Breakdown", show_header=True, header_style="bold magenta")
+    table.add_column("Metric", style="cyan")
+    table.add_column("Score", justify="right", style="yellow")
+    table.add_column("Rating", style="green")
+
+    def get_rating(score):
+        if score >= 80:
+            return "Excellent"
+        elif score >= 70:
+            return "Good"
+        elif score >= 60:
+            return "Fair"
+        else:
+            return "Poor"
+
+    overall = fund_analysis.get('overall_score', 0)
+    table.add_row("[bold]Overall Score[/bold]", f"[bold]{overall:.1f}/100[/bold]", f"[bold]{get_rating(overall)}[/bold]")
+    table.add_row("", "", "")
+
+    table.add_row("Growth", f"{fund_analysis.get('growth_score', 0):.1f}/100", get_rating(fund_analysis.get('growth_score', 0)))
+    table.add_row("Valuation", f"{fund_analysis.get('valuation_score', 0):.1f}/100", get_rating(fund_analysis.get('valuation_score', 0)))
+    table.add_row("Profitability", f"{fund_analysis.get('profitability_score', 0):.1f}/100", get_rating(fund_analysis.get('profitability_score', 0)))
+    table.add_row("Financial Health", f"{fund_analysis.get('financial_health_score', 0):.1f}/100", get_rating(fund_analysis.get('financial_health_score', 0)))
+    table.add_row("Quality", f"{fund_analysis.get('quality_score', 0):.1f}/100", get_rating(fund_analysis.get('quality_score', 0)))
+
+    console.print(table)
+
+    signal = fund_analysis.get('buy_signal', 'hold')
+    signal_color = 'green' if signal in ['buy', 'strong_buy'] else 'yellow'
+    console.print(f"\n[bold {signal_color}]Signal: {signal.upper()}[/bold {signal_color}]")
+    console.print(f"Risk Level: {fund_analysis.get('risk_level', 'unknown')}")
+    console.print()
+
+
+def display_favorites(favorites):
+    """Display favorites in a table."""
+    table = Table(title="Favorite Stocks", show_header=True, header_style="bold magenta")
+    table.add_column("Symbol", style="cyan")
+    table.add_column("Name", style="white")
+    table.add_column("Category", style="yellow")
+    table.add_column("Added", style="dim")
+
+    for fav in favorites:
+        table.add_row(
+            fav['symbol'],
+            fav['name'] or '',
+            fav['category'],
+            fav['added_date'][:10]
+        )
+
+    console.print(table)
+    console.print(f"\nTotal: {len(favorites)} favorites\n")
+
+
+def display_categories(categories):
+    """Display categories."""
+    table = Table(title="Favorite Categories", show_header=True, header_style="bold magenta")
+    table.add_column("Category", style="cyan")
+    table.add_column("Description", style="white")
+    table.add_column("Stocks", justify="right", style="yellow")
+
+    for cat in categories:
+        table.add_row(
+            cat['name'],
+            cat['description'] or '',
+            str(cat['count'])
+        )
+
+    console.print(table)
+    console.print()
 
 
 def display_opportunities_table(df):
