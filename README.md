@@ -115,36 +115,50 @@ tradingEnv\Scripts\activate
 **Scan market for opportunities:**
 ```bash
 python main.py scan --markets TSX NASDAQ
+# OR on macOS:
+python3 main.py scan --markets TSX NASDAQ
 ```
 
 **Analyze a specific stock:**
 ```bash
 python main.py analyze SHOP.TO
+# OR on macOS:
+python3 main.py analyze SHOP.TO
 ```
 
 **Get investment recommendations:**
 ```bash
 python main.py recommend --focus growth --min-score 70
+# OR on macOS:
+python3 main.py recommend --focus growth --min-score 70
 ```
 
 **Evaluate buying a stock:**
 ```bash
 python main.py buy LSPD.TO
+# OR on macOS:
+python3 main.py buy LSPD.TO
 ```
 
 **Evaluate selling a position:**
 ```bash
 python main.py sell SHOP.TO
+# OR on macOS:
+python3 main.py sell SHOP.TO
 ```
 
 **Run daily routine:**
 ```bash
 python main.py daily
+# OR on macOS:
+python3 main.py daily
 ```
 
 **View portfolio:**
 ```bash
 python main.py portfolio
+# OR on macOS:
+python3 main.py portfolio
 ```
 
 #### Python API
@@ -247,6 +261,7 @@ NEWS_API_KEY=your_key_here
 ```bash
 # List all stocks numbered by country
 python main.py list
+# OR on macOS: python3 main.py list
 
 # List stocks by specific market
 python main.py list --market USA
@@ -261,6 +276,7 @@ python main.py list --cached
 ```bash
 # Show all commands
 python main.py help
+# OR on macOS: python3 main.py help
 
 # Show specific command help
 python main.py help list
@@ -274,6 +290,7 @@ python main.py help fav
 ```bash
 # Refresh specific stocks by symbol
 python main.py refresh NVDA AAPL MSFT
+# OR on macOS: python3 main.py refresh NVDA AAPL MSFT
 
 # Note: First refresh will be slow as it fetches data
 # Subsequent refreshes within 1 hour will be skipped unless forced
@@ -298,6 +315,7 @@ python main.py refresh --numbers 1-10 --force
 ```bash
 # View cache statistics
 python main.py cache stats
+# OR on macOS: python3 main.py cache stats
 
 # Clear specific stock cache
 python main.py cache clear NVDA
@@ -312,15 +330,21 @@ python main.py cache clear
 ```bash
 # US stocks
 python main.py analyze NVDA
+# OR on macOS: python3 main.py analyze NVDA
+
 python main.py analyze AAPL
 python main.py analyze MSFT
 
 # Indian stocks (add .NS suffix)
 python main.py analyze TCS.NS
+# OR on macOS: python3 main.py analyze TCS.NS
+
 python main.py analyze INFY.NS
 
 # Canadian stocks (add .TO suffix)
 python main.py analyze SHOP.TO
+# OR on macOS: python3 main.py analyze SHOP.TO
+
 python main.py analyze LSPD.TO
 ```
 
@@ -328,18 +352,22 @@ python main.py analyze LSPD.TO
 ```bash
 # Add favorites to different categories
 python main.py fav add NVDA ai
+# OR on macOS: python3 main.py fav add NVDA ai
+
 python main.py fav add PLTR ai
 python main.py fav add SHOP.TO ecommerce
 python main.py fav add TCS.NS indian-it
 
 # List all favorites
 python main.py fav show
+# OR on macOS: python3 main.py fav show
 
 # List favorites by category
 python main.py fav show ai
 
 # Scan favorites for signals
 python main.py fav scan
+# OR on macOS: python3 main.py fav scan
 
 # View all categories
 python main.py fav categories
@@ -355,6 +383,7 @@ python main.py fav export favorites.json
 ```bash
 # Scan AI companies
 python main.py ai
+# OR on macOS: python3 main.py ai
 
 # Scan by sector
 python main.py sector cloud
@@ -367,6 +396,7 @@ python main.py india
 
 # Get top opportunities
 python main.py top 10
+# OR on macOS: python3 main.py top 10
 ```
 
 ### Quick Test Workflow
@@ -376,30 +406,39 @@ Here's a quick test sequence to verify everything works:
 ```bash
 # 1. Check help system
 python main.py help
+# OR on macOS: python3 main.py help
 
 # 2. List stocks to see what's available
 python main.py list --market USA | head -50
+# OR on macOS: python3 main.py list --market USA | head -50
 
 # 3. Refresh a few stocks (note their numbers from list output)
 python main.py refresh --numbers 1,2,3
+# OR on macOS: python3 main.py refresh --numbers 1,2,3
 
 # 4. Check cache statistics
 python main.py cache stats
+# OR on macOS: python3 main.py cache stats
 
 # 5. Analyze a stock
 python main.py analyze NVDA
+# OR on macOS: python3 main.py analyze NVDA
 
 # 6. Add to favorites
 python main.py fav add NVDA ai
+# OR on macOS: python3 main.py fav add NVDA ai
 
 # 7. View favorites
 python main.py fav show
+# OR on macOS: python3 main.py fav show
 
 # 8. Get quick info
 python main.py info NVDA
+# OR on macOS: python3 main.py info NVDA
 
 # 9. Get investment score
 python main.py score NVDA
+# OR on macOS: python3 main.py score NVDA
 ```
 
 ### Troubleshooting Local Testing
@@ -411,9 +450,11 @@ cd trading_resources
 
 # Verify Python can find modules
 python -m py_compile main.py
+# OR on macOS: python3 -m py_compile main.py
 
 # Run with python -m if imports fail
 python -m main help
+# OR on macOS: python3 -m main help
 ```
 
 #### yfinance Slow or Failing
@@ -453,6 +494,12 @@ python -m py_compile main.py
 python -m py_compile investment_agent/utils/data_cache.py
 python -m py_compile investment_agent/utils/help_system.py
 python -m py_compile investment_agent/data/company_database.py
+
+# OR on macOS:
+python3 -m py_compile main.py
+python3 -m py_compile investment_agent/utils/data_cache.py
+python3 -m py_compile investment_agent/utils/help_system.py
+python3 -m py_compile investment_agent/data/company_database.py
 
 echo "✓ All files have valid Python syntax"
 ```
@@ -508,6 +555,8 @@ See `examples/basic_usage.py` for comprehensive examples:
 Run examples:
 ```bash
 python examples/basic_usage.py
+# OR on macOS:
+python3 examples/basic_usage.py
 ```
 
 ## 📁 Project Structure
@@ -606,6 +655,8 @@ risk:
 ```bash
 # Run every day at 9:00 AM (after market open)
 python main.py daily
+# OR on macOS:
+python3 main.py daily
 ```
 
 This will:
@@ -618,6 +669,10 @@ This will:
 # Run every Monday
 python main.py scan --markets TSX TSXV NASDAQ NYSE
 python main.py recommend --focus growth --min-score 65
+
+# OR on macOS:
+python3 main.py scan --markets TSX TSXV NASDAQ NYSE
+python3 main.py recommend --focus growth --min-score 65
 ```
 
 ### Setup Cron Job (Linux/Mac)
@@ -626,10 +681,11 @@ python main.py recommend --focus growth --min-score 65
 crontab -e
 
 # Add daily routine at 9:00 AM
-0 9 * * 1-5 cd /path/to/trading_resources && python main.py daily >> logs/daily.log 2>&1
+# Note: Use python3 on macOS
+0 9 * * 1-5 cd /path/to/trading_resources && python3 main.py daily >> logs/daily.log 2>&1
 
 # Add weekly scan on Monday at 10:00 AM
-0 10 * * 1 cd /path/to/trading_resources && python main.py scan >> logs/weekly.log 2>&1
+0 10 * * 1 cd /path/to/trading_resources && python3 main.py scan >> logs/weekly.log 2>&1
 ```
 
 ## 📈 Performance Metrics
