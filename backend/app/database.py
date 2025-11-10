@@ -1,18 +1,21 @@
 """
 Database Configuration and Session Management
 """
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from typing import Generator
 from .config import settings
 
 # Create database engine
+# For SQLite, disable pooling; for PostgreSQL, use pooling
+connect_args = {"check_same_thread": False} if settings.DATABASE_URL.startswith("sqlite") else {}
+pool_pre_ping = not settings.DATABASE_URL.startswith("sqlite")
+
 engine = create_engine(
     settings.DATABASE_URL,
-    pool_pre_ping=True,  # Verify connections before using
-    pool_size=settings.DATABASE_POOL_SIZE,
-    max_overflow=settings.DATABASE_MAX_OVERFLOW,
+    connect_args=connect_args,
+    pool_pre_ping=pool_pre_ping,
     echo=settings.DEBUG,  # Log SQL queries in debug mode
 )
 
@@ -53,7 +56,7 @@ def check_db_connection() -> bool:
     """Check if database connection is working"""
     try:
         with engine.connect() as connection:
-            connection.execute("SELECT 1")
+            connection.execute(text("SELECT 1"))
         return True
     except Exception as e:
         print(f"✗ Database connection failed: {e}")
