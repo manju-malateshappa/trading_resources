@@ -58,18 +58,35 @@ git clone <repository-url>
 cd trading_resources
 ```
 
-2. **Install dependencies**
+2. **Create and activate virtual environment**
 ```bash
+# Create virtual environment
+python -m venv tradingEnv
+
+# Activate it
+# On macOS/Linux:
+source tradingEnv/bin/activate
+
+# On Windows:
+tradingEnv\Scripts\activate
+```
+
+3. **Install dependencies**
+```bash
+# Install core dependencies
+pip install pandas numpy yfinance rich loguru pyyaml python-dotenv requests scikit-learn
+
+# Or install all dependencies (some optional packages may fail)
 pip install -r requirements.txt
 ```
 
-3. **Set up environment variables**
+4. **Set up environment variables**
 ```bash
 cp .env.example .env
 # Edit .env and add your API keys (optional but recommended)
 ```
 
-4. **Configure settings** (optional)
+5. **Configure settings** (optional)
 Edit `investment_agent/config/settings.yaml` to customize:
 - Entry/exit criteria
 - Risk parameters
@@ -77,6 +94,15 @@ Edit `investment_agent/config/settings.yaml` to customize:
 - Portfolio limits
 
 ### Basic Usage
+
+**Note:** Remember to activate your virtual environment before running commands:
+```bash
+# On macOS/Linux:
+source tradingEnv/bin/activate
+
+# On Windows:
+tradingEnv\Scripts\activate
+```
 
 #### Command Line Interface
 
@@ -161,17 +187,17 @@ cd trading_resources
 git checkout claude/build-investment-agent-011CUwsGyMhhqaTsbP8T4qVS
 ```
 
-2. **Create a virtual environment (recommended)**
+2. **Create and activate virtual environment**
 ```bash
 # Create virtual environment
-python -m venv venv
+python -m venv tradingEnv
 
 # Activate it
 # On macOS/Linux:
-source venv/bin/activate
+source tradingEnv/bin/activate
 
 # On Windows:
-venv\Scripts\activate
+tradingEnv\Scripts\activate
 ```
 
 3. **Install dependencies**
