@@ -2,7 +2,7 @@
 Portfolio Model - SQLAlchemy
 Stores user portfolio and position data
 """
-from sqlalchemy import Column, String, Float, DateTime, ForeignKey, Integer, Text, Enum
+from sqlalchemy import Column, String, Float, DateTime, ForeignKey, Integer, Text, Enum, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import uuid
