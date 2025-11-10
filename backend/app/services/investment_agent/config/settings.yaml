@@ -1,0 +1,233 @@
+# Investment Agent Configuration
+
+# Strategy Settings
+strategy:
+  name: "buy_and_hold_with_exits"
+  target_growth: 1.00  # 100% minimum target
+  max_hold_period_days: 730  # 2 years max
+
+  # Entry Criteria
+  entry:
+    min_revenue_growth: 0.15  # 15% YoY revenue growth
+    max_pe_ratio: 30
+    min_profit_margin: 0.05
+    max_debt_to_equity: 2.0
+    min_current_ratio: 1.2
+
+    # Technical entry signals
+    rsi_oversold: 35
+    rsi_overbought: 70
+    require_uptrend: true
+    min_volume_avg: 100000
+
+  # Exit Criteria
+  exit:
+    take_profit_levels:
+      - 0.25  # 25% gain - sell 20%
+      - 0.50  # 50% gain - sell 25%
+      - 1.00  # 100% gain - sell 30%
+      - 2.00  # 200% gain - sell remaining
+
+    stop_loss: 0.15  # 15% stop loss
+    trailing_stop: 0.10  # 10% trailing stop after 20% gain
+
+    # Fundamental deterioration signals
+    revenue_decline_quarters: 2
+    margin_compression: 0.30  # 30% margin decline
+    debt_increase: 0.50  # 50% debt increase
+
+# Stock Screening
+screening:
+  markets:
+    - "TSX"  # Toronto Stock Exchange (Canada)
+    - "TSXV"  # TSX Venture Exchange (Canada)
+    - "NASDAQ"  # NASDAQ (USA)
+    - "NYSE"  # New York Stock Exchange (USA)
+    - "NSE"  # National Stock Exchange (India)
+    - "BSE"  # Bombay Stock Exchange (India)
+
+  focus:
+    - "small_cap"  # $300M - $2B
+    - "mid_cap"    # $2B - $10B
+
+  sectors:
+    # High-growth sectors
+    - "Technology"
+    - "Healthcare"
+    - "Consumer Discretionary"
+    - "Industrials"
+    - "Materials"
+    - "Energy"
+    - "Financials"
+    - "AI & Machine Learning"  # AI-specific
+    - "Cloud Computing"
+    - "Cybersecurity"
+    - "Fintech"
+    - "E-commerce"
+    - "Clean Energy"
+
+  exclude_sectors:
+    - "Utilities"  # Typically low growth
+
+  # AI-specific screening
+  ai_focus:
+    enabled: true
+    markets:
+      - "USA"  # NVIDIA, Palantir, C3.ai, etc.
+      - "CANADA"  # Shopify, AI startups
+      - "INDIA"  # TCS, Infosys, AI services
+    categories:
+      - "AI Chips"  # NVIDIA, AMD, ARM
+      - "AI Platform"  # Palantir, C3.ai, Microsoft
+      - "AI Software"  # ServiceNow, Salesforce
+      - "AI Services"  # TCS, Infosys, Accenture
+      - "AI Security"  # CrowdStrike, SentinelOne
+      - "AI Healthcare"  # Veeva, Doximity
+
+  # Emerging stock criteria
+  emerging_criteria:
+    min_market_cap: 100000000  # $100M
+    max_market_cap: 10000000000  # $10B
+    min_avg_volume: 50000
+    min_price: 1.00
+    max_price: 100.00
+    min_days_listed: 90
+    insider_ownership_min: 0.05  # 5% insider ownership
+    institutional_ownership_min: 0.10  # 10% institutional
+
+# Portfolio Management
+portfolio:
+  max_positions: 20
+  min_positions: 5
+  max_sector_allocation: 0.30  # 30% max in any sector
+  max_position_size: 0.15  # 15% max in any single stock
+  min_position_size: 0.03  # 3% minimum position
+  cash_reserve: 0.10  # Keep 10% cash
+
+  rebalancing:
+    frequency: "monthly"
+    threshold: 0.05  # Rebalance if drift > 5%
+
+# Risk Management
+risk:
+  max_portfolio_volatility: 0.25
+  max_correlation: 0.70
+  max_drawdown: 0.20
+  beta_target: 1.2  # Target slightly higher than market
+  sharpe_ratio_target: 1.0
+
+  position_sizing:
+    method: "kelly_criterion"  # or "equal_weight" or "risk_parity"
+    kelly_fraction: 0.25  # Use 25% of Kelly criterion
+
+  diversification:
+    min_stocks: 5
+    max_stocks: 20
+    min_sectors: 3
+
+# Data Sources
+data_sources:
+  primary: "yfinance"  # Free and reliable
+  fundamental: "alpha_vantage"
+  news: "finnhub"
+  economic: "fred"
+
+  update_frequency:
+    intraday: "1h"
+    daily: "16:30"  # After market close
+    weekly: "SAT:10:00"
+    monthly: "1st:10:00"
+
+# Analysis Settings
+analysis:
+  fundamental:
+    lookback_years: 5
+    min_data_points: 8  # Minimum quarters of data
+
+  technical:
+    indicators:
+      - "SMA_20"
+      - "SMA_50"
+      - "SMA_200"
+      - "RSI_14"
+      - "MACD"
+      - "Bollinger_Bands"
+      - "Volume_Profile"
+      - "ADX"
+      - "ATR"
+
+    timeframes:
+      - "1d"  # Daily
+      - "1wk"  # Weekly
+
+  sentiment:
+    enabled: true
+    sources:
+      - "news"
+      - "social_media"
+    min_sentiment_score: 0.3
+
+# Backtesting
+backtesting:
+  start_date: "2019-01-01"
+  end_date: "2024-12-31"
+  initial_capital: 100000
+  commission: 0.001  # 0.1% per trade
+  slippage: 0.001  # 0.1% slippage
+
+# Reporting
+reporting:
+  frequency: "daily"
+  formats:
+    - "json"
+    - "csv"
+    - "html"
+
+  metrics:
+    - "total_return"
+    - "annualized_return"
+    - "sharpe_ratio"
+    - "sortino_ratio"
+    - "max_drawdown"
+    - "win_rate"
+    - "profit_factor"
+    - "average_gain"
+    - "average_loss"
+
+  alerts:
+    price_target_hit: true
+    stop_loss_triggered: true
+    new_signal: true
+    portfolio_rebalance: true
+    unusual_volume: true
+
+# Canadian Tax Optimization
+tax:
+  account_types:
+    TFSA:
+      contribution_limit: 88000  # 2024 cumulative
+      tax_on_gains: 0.0
+      tax_on_dividends: 0.0
+      withdrawal_tax: 0.0
+
+    RRSP:
+      contribution_limit: 30780  # 2024 limit
+      tax_on_contribution: -0.45  # Tax deduction
+      tax_on_withdrawal: 0.45  # Marginal rate
+
+    TAXABLE:
+      capital_gains_inclusion: 0.50
+      dividend_tax_credit: 0.15
+
+  optimization:
+    prefer_tfsa_for_growth: true
+    prefer_rrsp_for_dividends: false
+    harvest_losses: true
+    superficial_loss_days: 30
+
+# Logging
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  file: "investment_agent/logs/agent.log"
+  rotation: "10 MB"
+  retention: "30 days"
