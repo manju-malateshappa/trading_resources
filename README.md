@@ -61,7 +61,10 @@ cd trading_resources
 2. **Create and activate virtual environment**
 ```bash
 # Create virtual environment
+# Note: On macOS, use python3 instead of python
 python -m venv tradingEnv
+# OR on macOS:
+python3 -m venv tradingEnv
 
 # Activate it
 # On macOS/Linux:
@@ -73,11 +76,14 @@ tradingEnv\Scripts\activate
 
 3. **Install dependencies**
 ```bash
-# Install core dependencies
-pip install pandas numpy yfinance rich loguru pyyaml python-dotenv requests scikit-learn
+# Install core dependencies (recommended for first-time setup)
+pip install pandas numpy yfinance rich loguru pyyaml python-dotenv requests scikit-learn alpha_vantage
 
-# Or install all dependencies (some optional packages may fail)
+# Or install all dependencies (some optional packages like ta-lib may fail)
 pip install -r requirements.txt
+
+# If requirements.txt fails, install missing packages individually:
+pip install alpha_vantage finnhub-python fredapi
 ```
 
 4. **Set up environment variables**
@@ -190,7 +196,10 @@ git checkout claude/build-investment-agent-011CUwsGyMhhqaTsbP8T4qVS
 2. **Create and activate virtual environment**
 ```bash
 # Create virtual environment
+# Note: On macOS, use python3 instead of python
 python -m venv tradingEnv
+# OR on macOS:
+python3 -m venv tradingEnv
 
 # Activate it
 # On macOS/Linux:
@@ -202,12 +211,15 @@ tradingEnv\Scripts\activate
 
 3. **Install dependencies**
 ```bash
-# Install core dependencies first
-pip install pandas numpy yfinance rich loguru pyyaml python-dotenv requests scikit-learn
+# Install core dependencies first (recommended)
+pip install pandas numpy yfinance rich loguru pyyaml python-dotenv requests scikit-learn alpha_vantage
 
 # Or try installing from requirements.txt
 # Note: Some optional dependencies like pandas-ta or ta-lib may fail
 pip install -r requirements.txt
+
+# If requirements.txt fails, install missing packages individually:
+pip install alpha_vantage finnhub-python fredapi
 ```
 
 4. **Set up API keys (optional but recommended)**

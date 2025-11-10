@@ -30,7 +30,7 @@ python-dotenv>=1.0.0
 
 # Database & Storage
 sqlalchemy>=2.0.0
-sqlite3-python>=1.0.0
+# Note: sqlite3 is included in Python standard library
 
 # Utilities
 pyyaml>=6.0
