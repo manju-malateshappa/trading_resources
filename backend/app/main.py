@@ -173,15 +173,14 @@ async def api_info():
 
 
 # ============================================================================
-# API ROUTERS (To be added)
+# API ROUTERS
 # ============================================================================
 
-# from .api.v1.router import api_router
-# app.include_router(api_router, prefix=settings.API_V1_PREFIX)
+# Import routers
+from .api.v1 import auth
 
-# For now, we'll add routers manually as we create them:
-# from .api.v1 import auth
-# app.include_router(auth.router, prefix=f"{settings.API_V1_PREFIX}/auth", tags=["auth"])
+# Register authentication router
+app.include_router(auth.router, prefix=f"{settings.API_V1_PREFIX}/auth", tags=["Authentication"])
 
 
 # ============================================================================
