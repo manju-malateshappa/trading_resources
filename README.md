@@ -270,6 +270,7 @@ python3 cli.py cache stats
 |----------|-------------|
 | [Setup Guide](./docs/SETUP_GUIDE.md) | Complete setup walkthrough (2-4 hours) |
 | [Architecture](./docs/ARCHITECTURE.md) | System design and tech stack |
+| [Testing Guide](./docs/TESTING_GUIDE.md) | API testing guide with examples |
 | [CLI Reference](./docs/CLI_REFERENCE.md) | All CLI commands and examples |
 | [Markets Guide](./docs/MARKETS_GUIDE.md) | Market coverage and stock lists |
 | [Backend README](./backend/README.md) | Backend-specific documentation |
@@ -343,14 +344,25 @@ python3 cli.py cache stats
 
 ## 🧪 Testing
 
-### Test Backend
+**📚 Complete Guide:** [Testing Guide](./docs/TESTING_GUIDE.md) - Comprehensive testing documentation with examples
+
+### Quick Tests
+
+**Test Backend API:**
 ```bash
-cd backend
-source venv/bin/activate
-python3 -m pytest tests/ -v
+# Open interactive API docs
+open http://localhost:8000/docs
+
+# Test user registration
+curl -X POST http://localhost:8000/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","username":"test","password":"Test123456"}'
+
+# Health check
+curl http://localhost:8000/health
 ```
 
-### Test CLI
+**Test CLI:**
 ```bash
 # Quick smoke test
 python3 cli.py help
@@ -358,13 +370,11 @@ python3 cli.py analyze NVDA
 python3 cli.py list --market USA | head -20
 ```
 
-### Test API (with backend running)
+**Run Automated Tests:**
 ```bash
-# Health check
-curl http://localhost:8000/health
-
-# API docs
-open http://localhost:8000/docs
+cd backend
+source venv/bin/activate
+python3 -m pytest tests/ -v
 ```
 
 ---
