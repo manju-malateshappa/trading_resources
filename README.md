@@ -1,823 +1,457 @@
 # Investment Agent 🤖📈
 
-An AI-powered investment analysis and portfolio management system specializing in identifying high-growth small/mid-cap stocks with potential for 100-200% returns within 1-2 years.
+> **AI-powered investment analysis and portfolio management** - Available as a modern web application and powerful CLI tool.
 
-## 🎯 Overview
+## 🎯 What is This?
 
-The Investment Agent is a comprehensive automated system that combines:
-- **Fundamental Analysis**: Deep dive into company financials, growth metrics, and valuation
-- **Technical Analysis**: Chart patterns, momentum indicators, and trend analysis
-- **Risk Management**: Position sizing, stop-loss, and portfolio diversification
-- **Portfolio Management**: Track positions, calculate returns, and optimize allocation
-- **Tax Optimization**: Canadian tax rules (TFSA, RRSP, capital gains)
-- **Automated Screening**: Daily/weekly scans for emerging opportunities
+An intelligent system that helps you identify high-growth small/mid-cap stocks with potential for 100-200% returns. It combines:
 
-## ✨ Key Features
+- **Fundamental Analysis** - Deep dive into financials, growth metrics, and valuation
+- **Technical Analysis** - Chart patterns, momentum indicators, trend analysis
+- **Risk Management** - Position sizing, stop-loss, portfolio diversification
+- **Portfolio Tracking** - Monitor positions, calculate returns, optimize allocation
+- **Multi-Market Coverage** - USA (NASDAQ/NYSE), Canada (TSX), India (NSE)
 
-### Investment Strategy
-- **Buy-and-Hold with Strategic Exits**: Long-term investment with defined exit criteria
-- **Growth-Focused**: Target 100-200% returns over 1-2 years
-- **Small/Mid-Cap Focus**: $100M - $10B market cap range
-- **Multi-Factor Analysis**: Combines fundamental, technical, and sentiment analysis
-
-### Analysis Capabilities
-1. **Fundamental Analysis**
-   - Revenue and earnings growth analysis
-   - Profitability metrics (margins, ROE, ROA)
-   - Financial health (debt levels, liquidity ratios)
-   - Valuation metrics (P/E, PEG, P/B, P/S)
-   - Quality scoring (institutional ownership, analyst ratings)
-
-2. **Technical Analysis**
-   - Trend identification (uptrend, downtrend, sideways)
-   - Momentum indicators (RSI, MACD, Stochastic)
-   - Moving averages (SMA, EMA)
-   - Volume analysis and breakout detection
-   - Support/resistance level identification
-
-3. **Risk Management**
-   - Automated position sizing using Kelly Criterion
-   - Stop-loss and trailing stop calculations
-   - Sector concentration limits
-   - Portfolio volatility monitoring
-   - Maximum drawdown tracking
-
-4. **Tax Optimization**
-   - TFSA prioritization for high-growth stocks
-   - Capital gains tax planning
-   - Tax-loss harvesting
-   - Superficial loss rule compliance (30-day rule)
+---
 
 ## 🚀 Quick Start
 
-### Installation
+### Option 1: Web Application (Full-Stack) 🌐
 
-1. **Clone the repository**
+**Modern web interface with dashboard, charts, and real-time updates**
+
 ```bash
-git clone <repository-url>
-cd trading_resources
-```
-
-2. **Create and activate virtual environment**
-```bash
-# Create virtual environment
-# Note: On macOS, use python3 instead of python
-python -m venv tradingEnv
-# OR on macOS:
-python3 -m venv tradingEnv
-
-# Activate it
-# On macOS/Linux:
-source tradingEnv/bin/activate
-
-# On Windows:
-tradingEnv\Scripts\activate
-```
-
-3. **Install dependencies**
-```bash
-# Install core dependencies (recommended for first-time setup)
-pip install pandas numpy yfinance rich loguru pyyaml python-dotenv requests scikit-learn alpha_vantage
-
-# Or install all dependencies (some optional packages like ta-lib may fail)
+# 1. Start Backend (Terminal 1)
+cd backend
+python3 -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
+python3 -m uvicorn app.main:app --reload
 
-# If requirements.txt fails, install missing packages individually:
-pip install alpha_vantage finnhub-python fredapi
+# 2. Start Frontend (Terminal 2)
+cd frontend
+npm install
+npm run dev
+
+# 3. Open http://localhost:5173
 ```
 
-4. **Set up environment variables**
-```bash
-cp .env.example .env
-# Edit .env and add your API keys (optional but recommended)
-```
+**📚 Full Guide:** [Complete Setup Instructions](./docs/SETUP_GUIDE.md)
 
-5. **Configure settings** (optional)
-Edit `investment_agent/config/settings.yaml` to customize:
-- Entry/exit criteria
-- Risk parameters
-- Screening filters
-- Portfolio limits
+### Option 2: Command Line Tool (CLI) 💻
 
-### Basic Usage
-
-**Note:** Remember to activate your virtual environment before running commands:
-```bash
-# On macOS/Linux:
-source tradingEnv/bin/activate
-
-# On Windows:
-tradingEnv\Scripts\activate
-```
-
-#### Command Line Interface
-
-**Scan market for opportunities:**
-```bash
-python main.py scan --markets TSX NASDAQ
-# OR on macOS:
-python3 main.py scan --markets TSX NASDAQ
-```
-
-**Analyze a specific stock:**
-```bash
-python main.py analyze SHOP.TO
-# OR on macOS:
-python3 main.py analyze SHOP.TO
-```
-
-**Get investment recommendations:**
-```bash
-python main.py recommend --focus growth --min-score 70
-# OR on macOS:
-python3 main.py recommend --focus growth --min-score 70
-```
-
-**Evaluate buying a stock:**
-```bash
-python main.py buy LSPD.TO
-# OR on macOS:
-python3 main.py buy LSPD.TO
-```
-
-**Evaluate selling a position:**
-```bash
-python main.py sell SHOP.TO
-# OR on macOS:
-python3 main.py sell SHOP.TO
-```
-
-**Run daily routine:**
-```bash
-python main.py daily
-# OR on macOS:
-python3 main.py daily
-```
-
-**View portfolio:**
-```bash
-python main.py portfolio
-# OR on macOS:
-python3 main.py portfolio
-```
-
-#### Python API
-
-```python
-from investment_agent.agent import InvestmentAgent
-
-# Initialize agent
-agent = InvestmentAgent(portfolio_name="My Portfolio")
-
-# Scan market for opportunities
-opportunities = agent.scan_market(markets=['TSX', 'NASDAQ'])
-
-# Analyze a specific stock
-analysis = agent.analyze_stock('SHOP.TO')
-
-# Get recommendations
-recommendations = agent.get_recommendations(
-    min_score=70.0,
-    focus='growth'  # 'growth', 'value', or 'breakout'
-)
-
-# Evaluate a buy
-evaluation = agent.evaluate_buy('LSPD.TO')
-
-# Run daily routine
-results = agent.daily_routine()
-```
-
-## 🧪 Local Testing
-
-### Prerequisites
-
-- Python 3.8 or higher
-- Git
-- Internet connection (for fetching stock data)
-
-### Setup Steps
-
-1. **Clone the repository**
-```bash
-git clone <your-repo-url>
-cd trading_resources
-
-# Switch to the feature branch (if needed)
-git checkout claude/build-investment-agent-011CUwsGyMhhqaTsbP8T4qVS
-```
-
-2. **Create and activate virtual environment**
-```bash
-# Create virtual environment
-# Note: On macOS, use python3 instead of python
-python -m venv tradingEnv
-# OR on macOS:
-python3 -m venv tradingEnv
-
-# Activate it
-# On macOS/Linux:
-source tradingEnv/bin/activate
-
-# On Windows:
-tradingEnv\Scripts\activate
-```
-
-3. **Install dependencies**
-```bash
-# Install core dependencies first (recommended)
-pip install pandas numpy yfinance rich loguru pyyaml python-dotenv requests scikit-learn alpha_vantage
-
-# Or try installing from requirements.txt
-# Note: Some optional dependencies like pandas-ta or ta-lib may fail
-pip install -r requirements.txt
-
-# If requirements.txt fails, install missing packages individually:
-pip install alpha_vantage finnhub-python fredapi
-```
-
-4. **Set up API keys (optional but recommended)**
-
-Create a `.env` file in the project root:
-```bash
-# .env file
-ALPHA_VANTAGE_API_KEY=your_key_here
-FINNHUB_API_KEY=your_key_here
-FRED_API_KEY=your_key_here
-NEWS_API_KEY=your_key_here
-```
-
-**Get free API keys from:**
-- Alpha Vantage: https://www.alphavantage.co/support/#api-key
-- Finnhub: https://finnhub.io/register
-- FRED: https://fred.stlouisfed.org/docs/api/api_key.html
-- NewsAPI: https://newsapi.org/register
-
-**Note:** The agent will work with just `yfinance` (no API keys needed), but with reduced functionality.
-
-### Testing New Data Management Features
-
-#### Test the List Command
-```bash
-# List all stocks numbered by country
-python main.py list
-# OR on macOS: python3 main.py list
-
-# List stocks by specific market
-python main.py list --market USA
-python main.py list --market CANADA
-python main.py list --market INDIA
-
-# Show only cached stocks
-python main.py list --cached
-```
-
-#### Test the Help System
-```bash
-# Show all commands
-python main.py help
-# OR on macOS: python3 main.py help
-
-# Show specific command help
-python main.py help list
-python main.py help refresh
-python main.py help cache
-python main.py help analyze
-python main.py help fav
-```
-
-#### Test the Refresh Command
-```bash
-# Refresh specific stocks by symbol
-python main.py refresh NVDA AAPL MSFT
-# OR on macOS: python3 main.py refresh NVDA AAPL MSFT
-
-# Note: First refresh will be slow as it fetches data
-# Subsequent refreshes within 1 hour will be skipped unless forced
-
-# Refresh specific numbered stocks (after running list)
-python main.py refresh --numbers 1,2,3
-
-# Refresh a range of stocks
-python main.py refresh --numbers 1-10
-
-# Refresh only stale data (>24 hours old)
-python main.py refresh --stale
-
-# Refresh all stocks in a market
-python main.py refresh --market USA
-
-# Force refresh even if recently cached
-python main.py refresh --numbers 1-10 --force
-```
-
-#### Test Cache Management
-```bash
-# View cache statistics
-python main.py cache stats
-# OR on macOS: python3 main.py cache stats
-
-# Clear specific stock cache
-python main.py cache clear NVDA
-
-# Clear all cache (will prompt for confirmation)
-python main.py cache clear
-```
-
-### Testing Other Core Features
-
-#### Analyze Individual Stocks
-```bash
-# US stocks
-python main.py analyze NVDA
-# OR on macOS: python3 main.py analyze NVDA
-
-python main.py analyze AAPL
-python main.py analyze MSFT
-
-# Indian stocks (add .NS suffix)
-python main.py analyze TCS.NS
-# OR on macOS: python3 main.py analyze TCS.NS
-
-python main.py analyze INFY.NS
-
-# Canadian stocks (add .TO suffix)
-python main.py analyze SHOP.TO
-# OR on macOS: python3 main.py analyze SHOP.TO
-
-python main.py analyze LSPD.TO
-```
-
-#### Test Favorites Management
-```bash
-# Add favorites to different categories
-python main.py fav add NVDA ai
-# OR on macOS: python3 main.py fav add NVDA ai
-
-python main.py fav add PLTR ai
-python main.py fav add SHOP.TO ecommerce
-python main.py fav add TCS.NS indian-it
-
-# List all favorites
-python main.py fav show
-# OR on macOS: python3 main.py fav show
-
-# List favorites by category
-python main.py fav show ai
-
-# Scan favorites for signals
-python main.py fav scan
-# OR on macOS: python3 main.py fav scan
-
-# View all categories
-python main.py fav categories
-
-# Remove a favorite
-python main.py fav remove NVDA
-
-# Export favorites to file
-python main.py fav export favorites.json
-```
-
-#### Test Market Scanning
-```bash
-# Scan AI companies
-python main.py ai
-# OR on macOS: python3 main.py ai
-
-# Scan by sector
-python main.py sector cloud
-python main.py sector fintech
-
-# Scan by country
-python main.py us
-python main.py canada
-python main.py india
-
-# Get top opportunities
-python main.py top 10
-# OR on macOS: python3 main.py top 10
-```
-
-### Quick Test Workflow
-
-Here's a quick test sequence to verify everything works:
+**Fast, scriptable interface for analysis and automation**
 
 ```bash
-# 1. Check help system
-python main.py help
-# OR on macOS: python3 main.py help
+# 1. Setup
+python3 -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r backend/requirements.txt
 
-# 2. List stocks to see what's available
-python main.py list --market USA | head -50
-# OR on macOS: python3 main.py list --market USA | head -50
+# 2. Run analysis
+python3 cli.py analyze NVDA
+python3 cli.py ai           # Scan AI companies
+python3 cli.py portfolio    # View portfolio
 
-# 3. Refresh a few stocks (note their numbers from list output)
-python main.py refresh --numbers 1,2,3
-# OR on macOS: python3 main.py refresh --numbers 1,2,3
-
-# 4. Check cache statistics
-python main.py cache stats
-# OR on macOS: python3 main.py cache stats
-
-# 5. Analyze a stock
-python main.py analyze NVDA
-# OR on macOS: python3 main.py analyze NVDA
-
-# 6. Add to favorites
-python main.py fav add NVDA ai
-# OR on macOS: python3 main.py fav add NVDA ai
-
-# 7. View favorites
-python main.py fav show
-# OR on macOS: python3 main.py fav show
-
-# 8. Get quick info
-python main.py info NVDA
-# OR on macOS: python3 main.py info NVDA
-
-# 9. Get investment score
-python main.py score NVDA
-# OR on macOS: python3 main.py score NVDA
+# 3. Get help
+python3 cli.py help
 ```
 
-### Troubleshooting Local Testing
+**📚 CLI Guide:** [CLI Reference](./docs/CLI_REFERENCE.md)
 
-#### Module Import Errors
-```bash
-# Make sure you're in the project directory
-cd trading_resources
+---
 
-# Verify Python can find modules
-python -m py_compile main.py
-# OR on macOS: python3 -m py_compile main.py
+## ✨ Key Features
 
-# Run with python -m if imports fail
-python -m main help
-# OR on macOS: python3 -m main help
-```
+### Web Application
+- ✅ **Secure Authentication** - JWT + Two-Factor Authentication (2FA)
+- ✅ **Dashboard** - Portfolio overview with charts and metrics
+- ✅ **Stock Search** - Real-time search with analysis
+- ✅ **Portfolio Management** - Track positions, trades, and performance
+- ✅ **Settings** - 2FA setup, profile management
+- ✅ **Responsive Design** - Works on mobile, tablet, and desktop
 
-#### yfinance Slow or Failing
-- yfinance is rate-limited by Yahoo Finance
-- Wait a few seconds between requests
-- The `--force` flag bypasses cache but hits the API harder
-- Use `--stale` to only refresh old data (more efficient)
+### CLI Tool
+- ✅ **Stock Analysis** - Deep dive into any stock (US/Canada/India)
+- ✅ **Market Scanning** - Screen for opportunities across markets
+- ✅ **Portfolio Tracking** - Manage multiple portfolios (TFSA, RRSP, etc.)
+- ✅ **Favorites Management** - Track stocks by category
+- ✅ **Cache System** - Fast repeated lookups
+- ✅ **Rich Output** - Beautiful tables and colored output
 
-#### Database Files
-The agent automatically creates SQLite databases in `investment_agent/data/`:
-- `favorites.db` - Your favorites list
-- `cache.db` - Stock data cache
-- `portfolio.db` - Portfolio data
+### Analysis Capabilities
+- 📊 **6-Factor Scoring** - Valuation, growth, profitability, health, quality, momentum
+- 📈 **15+ Technical Indicators** - RSI, MACD, Bollinger Bands, ADX, and more
+- 🎯 **Entry/Exit Signals** - Data-driven buy/sell recommendations
+- 💰 **Position Sizing** - Kelly Criterion-based calculations
+- 🛡️ **Risk Management** - Stop-loss, trailing stops, sector limits
+- 🇨🇦 **Tax Optimization** - TFSA/RRSP/taxable account strategies
 
-These are created automatically on first use. Don't commit them to git (they're in `.gitignore`).
-
-#### Missing Dependencies
-If a specific package fails to install:
-```bash
-# Install individually
-pip install pandas
-pip install numpy
-pip install yfinance
-pip install rich
-pip install loguru
-
-# Some optional packages may fail (ta-lib, pandas-ta)
-# The agent will still work without them
-```
-
-### Minimal Syntax Check (No Dependencies)
-
-If you just want to verify code structure without running:
-```bash
-# Check syntax of all new files
-python -m py_compile main.py
-python -m py_compile investment_agent/utils/data_cache.py
-python -m py_compile investment_agent/utils/help_system.py
-python -m py_compile investment_agent/data/company_database.py
-
-# OR on macOS:
-python3 -m py_compile main.py
-python3 -m py_compile investment_agent/utils/data_cache.py
-python3 -m py_compile investment_agent/utils/help_system.py
-python3 -m py_compile investment_agent/data/company_database.py
-
-echo "✓ All files have valid Python syntax"
-```
-
-### Expected Test Output
-
-When testing, you should see:
-- **Rich formatted tables** with colored output
-- **Cache status indicators**: Fresh (green), Aged (yellow), Stale (red)
-- **Progress spinners** during data refresh
-- **Success/failure counts** after operations
-- **Helpful tips** at the bottom of outputs
-
-## 📊 Investment Criteria
-
-### Entry Criteria (Configurable)
-- **Revenue Growth**: Minimum 15% YoY
-- **P/E Ratio**: Maximum 30 (flexible for high-growth)
-- **Profit Margin**: Minimum 5%
-- **Debt-to-Equity**: Maximum 2.0
-- **Current Ratio**: Minimum 1.2
-- **Market Cap**: $100M - $10B
-- **Average Volume**: Minimum 50,000 shares/day
-
-### Exit Criteria
-**Take-Profit Levels:**
-- 25% gain: Sell 20% of position
-- 50% gain: Sell 25% of position
-- 100% gain: Sell 30% of position
-- 200% gain: Sell remaining position
-
-**Stop-Loss:**
-- 15% fixed stop-loss
-- 10% trailing stop after 20% gain
-
-**Fundamental Deterioration:**
-- 2+ quarters of revenue decline
-- 30% margin compression
-- 50% debt increase
-- Analyst downgrades to sell
-
-## 🎓 Examples
-
-See `examples/basic_usage.py` for comprehensive examples:
-
-1. **Scan Market**: Find high-growth opportunities
-2. **Analyze Stock**: Deep dive into a specific stock
-3. **Evaluate Buy**: Determine if you should buy
-4. **Get Recommendations**: Various recommendation types
-5. **Daily Routine**: Automated daily workflow
-6. **Portfolio Simulation**: Build a sample portfolio
-
-Run examples:
-```bash
-python examples/basic_usage.py
-# OR on macOS:
-python3 examples/basic_usage.py
-```
+---
 
 ## 📁 Project Structure
 
 ```
 trading_resources/
-├── investment_agent/
-│   ├── agent.py                 # Main agent orchestrator
-│   ├── data/
-│   │   └── data_fetcher.py      # Stock data fetching
-│   ├── analysis/
-│   │   ├── fundamental_analyzer.py  # Fundamental analysis
-│   │   └── technical_analyzer.py    # Technical analysis
-│   ├── strategy/
-│   │   └── stock_screener.py    # Stock screening
-│   ├── portfolio/
-│   │   └── portfolio_manager.py # Portfolio management
-│   ├── risk/
-│   │   └── risk_manager.py      # Risk management
-│   ├── config/
-│   │   └── settings.yaml        # Configuration
-│   └── utils/
-│       ├── logger.py            # Logging
-│       └── config_loader.py     # Config loader
-├── main.py                       # CLI interface
-├── examples/
-│   └── basic_usage.py           # Usage examples
-├── requirements.txt              # Dependencies
-├── .env.example                  # Environment template
-└── README.md                     # This file
+├── backend/              # FastAPI Backend
+│   ├── app/
+│   │   ├── api/v1/      # REST API endpoints
+│   │   ├── models/      # Database models
+│   │   ├── services/    # Business logic
+│   │   └── main.py      # FastAPI application
+│   └── requirements.txt
+│
+├── frontend/             # React Frontend
+│   ├── src/
+│   │   ├── pages/       # Login, Dashboard, Portfolio
+│   │   ├── components/  # Reusable UI components
+│   │   └── services/    # API client
+│   └── package.json
+│
+├── docs/                 # Documentation
+│   ├── SETUP_GUIDE.md   # Detailed setup instructions
+│   ├── ARCHITECTURE.md  # System architecture
+│   ├── CLI_REFERENCE.md # CLI commands guide
+│   └── MARKETS_GUIDE.md # Market coverage & stock lists
+│
+└── cli.py               # CLI interface (original tool)
 ```
 
-## 🔑 API Keys (Optional but Recommended)
+---
 
-The agent works with free data sources (yfinance) but enhanced features require API keys:
+## 🔥 Web App Features
 
-1. **Alpha Vantage** (Free): Enhanced fundamental data
-   - Sign up: https://www.alphavantage.co/support/#api-key
+### Backend (FastAPI)
+- ✅ **REST API** with automatic OpenAPI docs at `/docs`
+- ✅ **JWT Authentication** with access and refresh tokens
+- ✅ **Two-Factor Auth** (TOTP/Google Authenticator)
+- ✅ **PostgreSQL/SQLite** for persistent storage
+- ✅ **Session Management** with device tracking
+- ✅ **Rate Limiting** and security hardening
+- ✅ **Investment Logic** wrapped as API services
 
-2. **Finnhub** (Free): Real-time news and additional data
-   - Sign up: https://finnhub.io/register
+### Frontend (React + TypeScript)
+- 📦 **Dashboard** - Portfolio overview and performance metrics
+- 📦 **Stock Search** - Real-time search with autocomplete
+- 📦 **Analysis Pages** - Charts, fundamentals, technicals
+- 📦 **Portfolio UI** - Manage positions and trades
+- 📦 **Settings** - 2FA setup, profile management
+- 📦 **Responsive** - Mobile-first design
 
-3. **News API** (Free): News sentiment analysis
-   - Sign up: https://newsapi.org/register
+### API Endpoints
 
-4. **FRED** (Free): Economic data
-   - Sign up: https://fred.stlouisfed.org/docs/api/api_key.html
-
-Add keys to your `.env` file:
-```env
-ALPHA_VANTAGE_API_KEY=your_key_here
-FINNHUB_API_KEY=your_key_here
-NEWS_API_KEY=your_key_here
-FRED_API_KEY=your_key_here
+**Authentication:**
+```
+POST   /api/v1/auth/register    # Register new user
+POST   /api/v1/auth/login       # Login (JWT tokens)
+GET    /api/v1/auth/2fa/setup   # Setup 2FA
+POST   /api/v1/auth/logout      # Logout
 ```
 
-## ⚙️ Configuration
-
-Edit `investment_agent/config/settings.yaml` to customize:
-
-### Strategy Parameters
-```yaml
-strategy:
-  entry:
-    min_revenue_growth: 0.15      # 15% minimum
-    max_pe_ratio: 30
-    min_profit_margin: 0.05
-  exit:
-    take_profit_levels: [0.25, 0.50, 1.00, 2.00]
-    stop_loss: 0.15
-    trailing_stop: 0.10
+**Stocks (Coming Soon):**
+```
+GET    /api/v1/stocks/search         # Search stocks
+GET    /api/v1/stocks/{symbol}       # Get stock details
+GET    /api/v1/stocks/{symbol}/analyze  # Analyze stock
 ```
 
-### Portfolio Limits
-```yaml
-portfolio:
-  max_positions: 20
-  max_position_size: 0.15         # 15% max per stock
-  max_sector_allocation: 0.30     # 30% max per sector
-  cash_reserve: 0.10              # Keep 10% cash
-```
+**Interactive Docs:** http://localhost:8000/docs (when backend running)
 
-### Risk Management
-```yaml
-risk:
-  max_portfolio_volatility: 0.25
-  max_drawdown: 0.20
-  position_sizing:
-    method: "kelly_criterion"
-    kelly_fraction: 0.25
-```
+---
 
-## 🤖 Automated Workflows
+## 💻 CLI Examples
 
-### Daily Routine
+**Analyze a stock:**
 ```bash
-# Run every day at 9:00 AM (after market open)
-python main.py daily
-# OR on macOS:
-python3 main.py daily
+python3 cli.py analyze NVDA
+python3 cli.py analyze SHOP.TO    # Canadian stock
+python3 cli.py analyze TCS.NS     # Indian stock
 ```
 
-This will:
-1. Scan market for new opportunities
-2. Monitor existing positions for exit signals
-3. Generate portfolio summary and alerts
-
-### Weekly Deep Scan
+**Screen for opportunities:**
 ```bash
-# Run every Monday
-python main.py scan --markets TSX TSXV NASDAQ NYSE
-python main.py recommend --focus growth --min-score 65
-
-# OR on macOS:
-python3 main.py scan --markets TSX TSXV NASDAQ NYSE
-python3 main.py recommend --focus growth --min-score 65
+python3 cli.py ai           # Scan AI companies
+python3 cli.py us           # US market scan
+python3 cli.py canada       # Canadian market scan
+python3 cli.py india        # Indian market scan
 ```
 
-### Setup Cron Job (Linux/Mac)
+**Manage favorites:**
 ```bash
-# Edit crontab
-crontab -e
-
-# Add daily routine at 9:00 AM
-# Note: Use python3 on macOS
-0 9 * * 1-5 cd /path/to/trading_resources && python3 main.py daily >> logs/daily.log 2>&1
-
-# Add weekly scan on Monday at 10:00 AM
-0 10 * * 1 cd /path/to/trading_resources && python3 main.py scan >> logs/weekly.log 2>&1
+python3 cli.py fav add NVDA ai
+python3 cli.py fav show
+python3 cli.py fav scan     # Scan favorites for signals
 ```
 
-## 📈 Performance Metrics
+**Portfolio management:**
+```bash
+python3 cli.py portfolio
+python3 cli.py buy SHOP.TO
+python3 cli.py sell LSPD.TO
+```
 
-The agent tracks comprehensive performance metrics:
-- **Total Return**: Overall portfolio return %
-- **Annualized Return**: Return annualized
-- **Sharpe Ratio**: Risk-adjusted return
-- **Sortino Ratio**: Downside risk-adjusted return
-- **Maximum Drawdown**: Largest peak-to-trough decline
-- **Win Rate**: Percentage of profitable trades
-- **Profit Factor**: Gross profit / gross loss
-- **Average Gain/Loss**: Average per winning/losing trade
+**Data management:**
+```bash
+python3 cli.py list --market USA
+python3 cli.py refresh --numbers 1-10
+python3 cli.py cache stats
+```
 
-## 🛡️ Risk Disclaimer
+**📚 Full CLI Guide:** [CLI Reference](./docs/CLI_REFERENCE.md)
 
-**IMPORTANT**: This software is for educational and research purposes only.
+---
 
-- **Not Financial Advice**: This is NOT financial advice. Always do your own research.
-- **No Guarantees**: Past performance doesn't guarantee future results
-- **High Risk**: Small/mid-cap stocks are volatile and risky
-- **Paper Trading**: Test with paper trading before using real money
-- **Consult Professionals**: Consult with licensed financial advisors
-- **Tax Implications**: Understand tax implications of trading
-- **Know Your Limits**: Only invest what you can afford to lose
+## 🏗️ Architecture
 
-## 🇨🇦 Canadian Tax Considerations
+```
+┌─────────────────────┐
+│   React Frontend    │  ← User Interface
+│   (TypeScript)      │
+└──────────┬──────────┘
+           │ HTTPS/REST
+┌──────────▼──────────┐
+│   FastAPI Backend   │  ← Business Logic + Auth
+│   (Python 3.11+)    │
+└──────────┬──────────┘
+           │ SQL
+┌──────────▼──────────┐
+│   PostgreSQL DB     │  ← Data Storage
+│   (or SQLite)       │
+└─────────────────────┘
+```
 
-The agent includes Canadian tax optimization:
+**Tech Stack:**
+- **Backend:** FastAPI, SQLAlchemy, JWT, TOTP, bcrypt
+- **Frontend:** React 18, TypeScript, Material-UI, React Query
+- **Database:** PostgreSQL (production) / SQLite (development)
+- **Deployment:** Vercel (frontend) + Railway (backend) + Supabase (DB)
+
+**📚 Deep Dive:** [Architecture Documentation](./docs/ARCHITECTURE.md)
+
+---
+
+## 🔐 Security Features
+
+- ✅ **Password Hashing** - bcrypt with 12 rounds
+- ✅ **JWT Tokens** - Access (30min) + Refresh (7 days)
+- ✅ **Two-Factor Auth** - TOTP with QR codes
+- ✅ **Session Tracking** - IP, device, user agent logging
+- ✅ **Rate Limiting** - Prevent brute force attacks
+- ✅ **Account Locking** - After 5 failed login attempts
+- ✅ **Encrypted Secrets** - TOTP secrets encrypted at rest
+
+---
+
+## 📊 Investment Strategy
+
+### Entry Criteria (Configurable)
+- Revenue Growth: >15% YoY
+- P/E Ratio: <30 (flexible for high-growth)
+- Profit Margin: >5%
+- Market Cap: $100M - $10B (small/mid-cap focus)
+- Average Volume: >50,000 shares/day
+
+### Exit Strategy
+**Take-Profit Levels:**
+- 25% gain → Sell 20% of position
+- 50% gain → Sell 25% of position
+- 100% gain → Sell 30% of position
+- 200% gain → Sell remaining position
+
+**Stop-Loss:**
+- 15% fixed stop-loss
+- 10% trailing stop after 20% gain
+
+---
+
+## 📚 Documentation
+
+| Document | Description |
+|----------|-------------|
+| [Setup Guide](./docs/SETUP_GUIDE.md) | Complete setup walkthrough (2-4 hours) |
+| [Architecture](./docs/ARCHITECTURE.md) | System design and tech stack |
+| [CLI Reference](./docs/CLI_REFERENCE.md) | All CLI commands and examples |
+| [Markets Guide](./docs/MARKETS_GUIDE.md) | Market coverage and stock lists |
+| [Backend README](./backend/README.md) | Backend-specific documentation |
+
+---
+
+## 🌍 Market Coverage
+
+### 🇺🇸 USA
+- **Exchanges:** NASDAQ, NYSE
+- **Companies:** 200+ including NVIDIA, Palantir, Microsoft, etc.
+- **Sectors:** AI, Cloud, Cybersecurity, Fintech, EV, Biotech
+
+### 🇨🇦 Canada
+- **Exchanges:** TSX, TSXV
+- **Companies:** 50+ including Shopify, Lightspeed, etc.
+- **Sectors:** Technology, Healthcare, Clean Energy, Cannabis
+
+### 🇮🇳 India
+- **Exchanges:** NSE, BSE
+- **Companies:** 100+ including TCS, Infosys, Wipro, etc.
+- **Sectors:** IT Services, Fintech, E-commerce, Pharma, EV
+
+**📚 Full List:** [Markets Guide](./docs/MARKETS_GUIDE.md)
+
+---
+
+## 🇨🇦 Canadian Tax Optimization
 
 ### TFSA (Tax-Free Savings Account)
-- **Best for**: High-growth stocks (100%+ gains)
-- **Tax on gains**: 0%
-- **Contribution limit**: $88,000 (2024 cumulative)
+- **Best for:** High-growth stocks (100%+ gains)
+- **Tax on gains:** 0%
+- **Strategy:** Prioritize stocks with 100-200% return potential
 
 ### RRSP (Registered Retirement Savings Plan)
-- **Best for**: Dividend-paying stocks
-- **Tax benefit**: Deduction on contribution
-- **Tax on withdrawal**: Marginal tax rate
+- **Best for:** Dividend-paying stocks
+- **Tax benefit:** Deduction on contribution
+- **Strategy:** Stable, dividend-focused holdings
 
 ### Taxable Account
-- **Capital gains**: 50% inclusion rate
-- **Tax-loss harvesting**: Offset gains with losses
-- **Superficial loss rule**: Wait 30 days before repurchasing
+- **Capital gains:** 50% inclusion rate
+- **Tax-loss harvesting:** Offset gains with losses
+- **Superficial loss rule:** Wait 30 days before repurchasing
 
-## 🔄 Updates & Maintenance
+---
 
-### Update Stock Data
-Stock data is fetched in real-time. For the best results:
-- Run during market hours for real-time prices
-- API rate limits apply (respect them)
+## 🛠️ Development Roadmap
 
-### Update Configuration
-After changing `settings.yaml`, restart the agent.
+### ✅ Completed
+- [x] Backend foundation with FastAPI
+- [x] JWT + 2FA authentication
+- [x] Database models (User, Session, Portfolio)
+- [x] CLI tool with full analysis capabilities
+- [x] Multi-market stock database (200+ companies)
+- [x] Fundamental & technical analysis engines
+
+### 📅 In Progress (Week 2)
+- [ ] Stock analysis API endpoints
+- [ ] Portfolio management API
+- [ ] Redis caching layer
+- [ ] Background job processing
+
+### 📅 Planned (Weeks 3-4)
+- [ ] Frontend dashboard
+- [ ] Real-time stock data
+- [ ] Charts and visualizations
+- [ ] Mobile responsiveness
+- [ ] Production deployment
+
+---
+
+## 🧪 Testing
+
+### Test Backend
+```bash
+cd backend
+source venv/bin/activate
+python3 -m pytest tests/ -v
+```
+
+### Test CLI
+```bash
+# Quick smoke test
+python3 cli.py help
+python3 cli.py analyze NVDA
+python3 cli.py list --market USA | head -20
+```
+
+### Test API (with backend running)
+```bash
+# Health check
+curl http://localhost:8000/health
+
+# API docs
+open http://localhost:8000/docs
+```
+
+---
 
 ## 🐛 Troubleshooting
 
-### Common Issues
+### Backend won't start
+```bash
+cd backend
+source venv/bin/activate
+pip install -r requirements.txt
+python3 -m uvicorn app.main:app --reload
+```
 
-**"No data returned for symbol"**
-- Check if symbol is correct (use .TO for TSX stocks)
-- Verify internet connection
-- Check if market is open
+### Database connection error
+```bash
+# Check .env file
+cat backend/.env
 
-**"Exceeds position limits"**
-- Increase `max_position_size` in config
-- Check available cash in portfolio
+# For local development, use SQLite:
+DATABASE_URL=sqlite:///./investment_agent.db
+```
 
-**"Rate limit exceeded"**
-- Wait a few minutes between requests
-- Consider using API keys for higher limits
+### CLI import errors
+```bash
+# Make sure dependencies are installed
+pip install -r backend/requirements.txt
 
-**"Module not found"**
-- Install all requirements: `pip install -r requirements.txt`
-- Verify Python version (3.8+)
+# Check Python version (need 3.11+)
+python3 --version
+```
 
-## 🤝 Contributing
+**📚 More Help:** [Setup Guide](./docs/SETUP_GUIDE.md#troubleshooting)
 
-Contributions are welcome! Areas for improvement:
-- Additional data sources and APIs
-- More sophisticated ML models
-- Enhanced backtesting capabilities
-- Additional market support (international)
-- Mobile/web interface
+---
 
-## 📝 License
+## 🛡️ Risk Disclaimer
 
-This project is for educational purposes. Use at your own risk.
+**IMPORTANT:** This software is for educational and research purposes only.
+
+- ❌ **Not Financial Advice** - Always do your own research
+- ❌ **No Guarantees** - Past performance doesn't guarantee future results
+- ⚠️ **High Risk** - Small/mid-cap stocks are volatile
+- ✅ **Paper Trade First** - Test before using real money
+- ✅ **Consult Professionals** - Talk to licensed financial advisors
+- ✅ **Know Your Limits** - Only invest what you can afford to lose
+
+---
 
 ## 📧 Support
 
-For questions, issues, or suggestions:
-- Open an issue on GitHub
-- Check examples in `examples/` directory
-- Review configuration in `investment_agent/config/settings.yaml`
+- **Documentation:** Check `docs/` folder
+- **CLI Help:** `python3 cli.py help`
+- **API Docs:** http://localhost:8000/docs (when running)
+- **Issues:** Create an issue on GitHub
 
 ---
 
 ## 🎯 Quick Reference
 
-### Best Practices
+**Web App:**
+```bash
+# Backend
+cd backend && uvicorn app.main:app --reload
 
-1. **Start with paper trading** to test the system
-2. **Run daily routine** every morning
-3. **Review recommendations** before buying
-4. **Set stop-losses** on all positions
-5. **Diversify** across sectors
-6. **Keep cash reserves** (10-20%)
-7. **Track performance** regularly
-8. **Rebalance quarterly**
-9. **Take profits** at target levels
-10. **Stay disciplined** with the strategy
+# Frontend
+cd frontend && npm run dev
+```
 
-### Recommended Workflow
+**CLI:**
+```bash
+# Analysis
+python3 cli.py analyze NVDA
+python3 cli.py ai
+python3 cli.py portfolio
 
-**Week 1: Setup**
-- Install and configure
-- Run market scans
-- Study top opportunities
-- Paper trade
+# Data management
+python3 cli.py list
+python3 cli.py refresh --numbers 1-10
+python3 cli.py cache stats
+```
 
-**Week 2-4: Testing**
-- Continue paper trading
-- Track recommendations
-- Monitor performance
-- Refine criteria
-
-**Month 2+: Live Trading**
-- Start with small positions
-- Follow entry/exit rules
-- Monitor daily
-- Review monthly
+**Documentation:**
+- [Setup Guide](./docs/SETUP_GUIDE.md) - Getting started
+- [Architecture](./docs/ARCHITECTURE.md) - System design
+- [CLI Reference](./docs/CLI_REFERENCE.md) - All commands
+- [Markets Guide](./docs/MARKETS_GUIDE.md) - Stock coverage
 
 ---
 
