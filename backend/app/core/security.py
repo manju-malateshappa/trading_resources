@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
 import secrets
 import string
-from passlib.context import CryptContext
+import bcrypt
 from jose import JWTError, jwt
 import pyotp
 import qrcode
@@ -13,9 +13,6 @@ import io
 import base64
 from cryptography.fernet import Fernet
 from ..config import settings
-
-# Password hashing context
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 # ============================================================================
@@ -30,8 +27,13 @@ def hash_password(password: str) -> str:
     """
     # Truncate password to 72 bytes (bcrypt limit)
     password_bytes = password.encode('utf-8')[:72]
-    password_truncated = password_bytes.decode('utf-8', errors='ignore')
-    return pwd_context.hash(password_truncated)
+
+    # Generate salt and hash
+    salt = bcrypt.gensalt(rounds=12)
+    hashed = bcrypt.hashpw(password_bytes, salt)
+
+    # Return as string
+    return hashed.decode('utf-8')
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -42,8 +44,10 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
     # Truncate password to 72 bytes (same as hash_password)
     password_bytes = plain_password.encode('utf-8')[:72]
-    password_truncated = password_bytes.decode('utf-8', errors='ignore')
-    return pwd_context.verify(password_truncated, hashed_password)
+    hashed_bytes = hashed_password.encode('utf-8')
+
+    # Verify password
+    return bcrypt.checkpw(password_bytes, hashed_bytes)
 
 
 # ============================================================================
