@@ -25,6 +25,7 @@ from ...core.security import (
     generate_session_token
 )
 from ...config import settings
+from ..dependencies import get_current_user
 
 router = APIRouter()
 
