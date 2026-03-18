@@ -1,0 +1,160 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[top=0.5in, bottom=0.5in, left=0.65in, right=0.65in]{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{tabularx}
+
+% Font
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% Hyperlink setup
+\hypersetup{colorlinks=true, urlcolor=black, linkcolor=black}
+
+% Section formatting — small caps with rule, tight spacing
+\titleformat{\section}{\normalsize\scshape\raggedright}{}{0em}{}[\titlerule]
+\titlespacing{\section}{0pt}{4pt}{2pt}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+% Bullet list tightening
+\setlist[itemize]{itemsep=0.5pt, topsep=1.5pt, parsep=0pt, partopsep=0pt}
+
+\begin{document}
+\pagestyle{empty}
+
+%----------HEADER----------
+\noindent
+\begin{tabularx}{\textwidth}{@{}X r@{}}
+  {\LARGE\textbf{Manju Malateshappa}} & Email : mmanju2@gmail.com \\
+  \href{https://www.linkedin.com/}{LinkedIn} ---
+  \href{https://github.com/}{Github} ---
+  \href{https://portfolio.com/}{Portfolio} ---
+  \href{https://publications.com/}{Publications}
+  & Mobile : +16047218984 \\
+\end{tabularx}
+
+%----------PROFILE----------
+\section{Profile}
+
+\begin{itemize}[leftmargin=*, label=\textbullet]
+  \item Experienced professional with over \textbf{8 years} of expertise in leading \textbf{AI-driven NLP solutions}, enhancing insights, managing \textbf{MLOps}, designing user interfaces, and addressing high-profile \textbf{customer issues}.
+  \item Graduated with a \textbf{Master's} in Computer Science, specializing in \textbf{Big Data} and \textbf{Machine Learning} from \textbf{Simon Fraser University}.
+  \item Proficient in developing data pipelines using \textbf{Apache Spark}, \textbf{MapReduce}, \textbf{Python} \& \textbf{HDFS}.
+  \item Proven ability in \textbf{optimizing web functionality} that improve data retrieval and workflow efficiencies.
+\end{itemize}
+
+%----------EXPERIENCE----------
+\section{Experience}
+
+\noindent\textbf{Alida Inc} \hfill \textit{Vancouver, Canada} \\
+\textit{\textbf{Senior Artificial Intelligence Engineer - Full time}} \hfill \textit{Sep 2022 -- Jun 2023}
+
+\begin{itemize}[leftmargin=1.2em, label=\textopenbullet]
+  \item Led the successful implementation of AI services, including \textbf{content parsing}, \textbf{PII masking}, and \textbf{conjoint analysis}, using \textbf{Node.js} and \textbf{Python} for comprehensive text analysis and market research.
+  \item Productized AI services using \textbf{Docker}, \textbf{Terraform}, and \textbf{Kubernetes (EKS)}, simplifying deployment and enhancing scalability for seamless service delivery.
+  \item \textbf{Architected} a centralized Python AI project \textbf{mono-repository} with \textbf{poetry}, enhancing project coordination and enabling the seamless development of advanced AI solutions.
+  \item Productized \textbf{data pipelines} for Text analysis services, seamlessly managing 15 million records and presenting insights on the text analysis dashboard, thereby securing a prestigious contract.
+  \item Assisted in scaling up the infrastructure for AI services using \textbf{Terraform}, enabling seamless handling of increased workload and ensuring \textbf{scalability}.
+  \item Played a key role in building a \textbf{nodejs framework} for text analysis services, enabling a \textbf{scalable} solution.
+  \item Effectively managed \textbf{MLOps} for \textbf{13 micro-services}, including \textbf{unit}, \textbf{performance}, and \textbf{smoke testing} and successfully oversaw \textbf{production} deployment.
+  \item Designed and implemented an advanced AI solution for \textbf{real-time} and \textbf{batch} tasks like sentiment analysis, tagging, taxonomy, masking, and parsing. Leveraged \textbf{serverless architecture}, \textbf{AWS Lambda}, \textbf{Step Functions}, \textbf{S3}, and \textbf{state machines} for maximum efficiency and scalability.
+\end{itemize}
+
+\vspace{2pt}
+\noindent\textit{\textbf{AI/ML Engineer - Full time}} \hfill \textit{May 2021 -- Sep 2022}
+
+\begin{itemize}[leftmargin=1.2em, label=\textopenbullet]
+  \item Designed and implemented a Text Analysis Solution for \textbf{part-of-speech tagging} and \textbf{sentiment analysis}, utilizing \textbf{Spacy}, \textbf{NLTK}, \textbf{AWS Comprehend}, and \textbf{AWS Translate}.
+  \item Successfully deployed Alida's Text Analysis Solution, creating \textbf{microservices}, with \textbf{AWS Lambda}, \textbf{Step Functions} and \textbf{state machines}. The final deployment was on \textbf{AWS EKS}, enhancing \textbf{scalability} \& \textbf{efficiency}.
+  \item Developed cloud infrastructure for AI services with \textbf{Terraform} for \textbf{AWS (DMS, RDS, IAM, S3, and SQS)}.
+  \item Designed and implemented a deployment workflow using \textbf{GitHub Workflow} \& \textbf{GoCD} for the \textbf{microservices}, configuring custom \textbf{AWS CloudFormation} resources through Terraform for streamlined deployment.
+  \item Integrated \textbf{Prettier}, \textbf{ESLint/TSLint}, \textbf{Pytest}, \textbf{Pylint} and \textbf{mypy} configurations for AI services in both Node.js and Python, resulting in a notable increase in \textbf{unit test} coverage and a reduction in bugs within the AI services.
+\end{itemize}
+
+\vspace{2pt}
+\noindent\textit{\textbf{AI/ML Engineer - Internship and Contract}} \hfill \textit{Apr 2020 -- May 2021}
+
+\begin{itemize}[leftmargin=1.2em, label=\textopenbullet]
+  \item Designed microservices for email \textbf{open rate prediction (XGBoost)} and \textbf{automated document tagging}, Terraformed AWS resources, and deployed them to production via AWS EKS and GoCD.
+  \item Developed a \textbf{React app} to seamlessly integrate email open rate predictions into the Alida Survey distribution platform, enhancing customer satisfaction and reducing churn.
+  \item Designed, productized, and deployed end-to-end \textbf{data pipelines} including \textbf{data collection}, \textbf{ETL}, and training.
+  \item Conducted extensive \textbf{research} on close competitors (Sawtooth Software and Qualtrics) for \textbf{conjoint analysis} offerings and subsequently designed and implemented a customized conjoint analysis solution.
+  \item Designed and deployed a \textbf{text analysis} microservice with \textbf{IBM NLU} on \textbf{AWS EKS}, optimizing scalability to handle four times more data and improving user satisfaction.
+\end{itemize}
+
+\vspace{3pt}
+\noindent\textbf{Nagra Kudelski} \hfill \textit{Bangalore, India} \\
+\textit{\textbf{Software Engineer (UI Developer) - Full time}} \hfill \textit{Jun 2017 -- Aug 2019}
+
+\begin{itemize}[leftmargin=1.2em, label=\textopenbullet]
+  \item Key contributor at FOXTEL TV Australia, leading the development of core features, including the \textbf{boot-up menu}, \textbf{content protection}, \textbf{Cloud DVR}, \textbf{parental lock}, \textbf{content blackout}, and \textbf{Google Analytics-based content recommendations}.
+  \item Effectively managed 3 challenging projects (CHIVAS TV, Euskatel TV, TBC Taiwan) while handling \textbf{requirements}, \textbf{project planning}, and ensuring \textbf{timely deliverables}.
+  \item Designed and developed highly scalable and maintainable embedded applications using \textbf{HTML}, \textbf{CSS}, \textbf{SASS} and \textbf{JavaScript}, optimizing performance for low-end platforms.
+  \item Implemented \textbf{Jasmine} and \textbf{Selenium} automation to enhance feature quality and prevent regressions.
+  \item Planned delivery of work and demonstrated active leadership within the team and agile practices. Conducted \textbf{design \& code reviews}, sign off code for push to production.
+\end{itemize}
+
+\vspace{2pt}
+\noindent\textit{\textbf{Software Engineer (Embedded UI developer) - Full time}} \hfill \textit{Jan 2014 -- May 2017}
+
+\begin{itemize}[leftmargin=1.2em, label=\textopenbullet]
+  \item Served as the primary contributor in \textbf{embedded UI} development projects for prominent Latin American clients, namely NET TV and Claro TV, headquartered in Brazil.
+  \item Provided effective solutions for various \textbf{performance issues}, in boot-up, screen navigation, and UI rendering.
+  \item Strong expertise in developing features such as \textbf{content protection} through CRM, \textbf{Picture-in-Picture (PIP)}, \textbf{parental control}, \textbf{recommendation systems}, \textbf{search} functionality, \textbf{CloudDVR} \& \textbf{IP channel} integration.
+  \item Supported successful live deployment of \textbf{IP Channels}, Net TV, and Claro TV \textbf{4K content} during the \textbf{2016 Rio Olympics}, resolving customer issues in \textbf{Brazil} (Nagra - Sao Paulo and Embratel - Campinas offices). Achieved seamless deployment for \textbf{2M customers}, securing a 2-year contract extension with Nagra Kudelski Group.
+  \item Participated in various \textbf{agile ceremonies} including user story grooming, sprint planning, demos, and retrospectives.
+\end{itemize}
+
+%----------EDUCATION----------
+\section{Education}
+
+\begin{itemize}[leftmargin=*, itemsep=2pt, label=\textbullet]
+  \item \textbf{Simon Fraser University} \hfill Burnaby, Canada \\
+    \textit{Master of Science in Computer Science (Big Data and Machine Learning)} \hfill \textit{Aug 2019 -- May 2021}
+  \item \textbf{University Visvesvaraya College of Engineering} \hfill Bangalore, India \\
+    \textit{Bachelor of Science in Computer Science} \hfill \textit{Aug 2009 -- Jun 2013}
+\end{itemize}
+
+%----------PROGRAMMING SKILLS----------
+\section{Programming Skills}
+
+\begin{itemize}[leftmargin=*, itemsep=1pt, label=\textbullet]
+  \item \textbf{Languages}: Python, Javascript, Typescript.
+  \item \textbf{Web Technologies/Frameworks}: ReactJS, Nodejs, D3.js, Django.
+  \item \textbf{Machine Learning Frameworks}: Scikit-learn, PyTorch, MLFlow.
+  \item \textbf{Natural Language Processing}: IBM-NLU, AWS Comprehend, LLM's (GPT-3.5, GPT-4).
+  \item \textbf{Cloud Technologies}: Docker, AWS, Kubernetes, Openshift, Terraform.
+  \item \textbf{Big-data Technologies}: Apache Spark, MapReduce, Kafka, HDFS.
+  \item \textbf{Databases}: SQL (MySQL), NoSQL (Cassandra \& MongoDB).
+\end{itemize}
+
+%----------DEVELOPMENT SKILLS----------
+\section{Development Skills}
+
+\begin{itemize}[leftmargin=*, itemsep=1pt, label=\textbullet]
+  \item \textbf{Package Management}: Poetry.
+  \item \textbf{Workflow Orchestration}: Apache Airflow.
+  \item \textbf{Version Control \& CI/CD}: GitHub, GitHub Actions, GoCD.
+\end{itemize}
+
+%----------HACKATHON EXPERIENCE----------
+\section{Hackathon Experience}
+
+\noindent\textbf{Alida Hackathon (17--18 March 2023) - Winner}
+\begin{itemize}[leftmargin=*, itemsep=1pt, label=\textbullet]
+  \item Crafted an integrated solution using \textbf{Jira}, \textbf{Slack}, \textbf{Git diff} and \textbf{LLM's} to automate PR generation on GitHub.
+  \item Deployed the solution using \textbf{GitHub Actions} and demonstrated the effectiveness of LLMs in \textbf{code reviews}.
+\end{itemize}
+
+\noindent\textbf{Alida Hackathon (17--18 Mar 2022) - Winner}
+\begin{itemize}[leftmargin=*, itemsep=1pt, label=\textbullet]
+  \item Designed a \textbf{classification} solution powered by \textbf{XGBoost} for precise detection of speedy survey respondents, expertly deployed within \textbf{AWS SageMaker}.
+  \item Integrated the \textbf{classification} solution into Alida platform, enhancing survey insights by identifying speedsters.
+\end{itemize}
+
+\end{document}
