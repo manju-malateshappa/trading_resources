@@ -60,6 +60,9 @@ investment_agent/reports/
 *.xlsx
 *.pdf
 
+# Allow resume PDFs
+!docs/resumes/resume_pdf/*.pdf
+
 # Jupyter Notebook
 .ipynb_checkpoints
 
