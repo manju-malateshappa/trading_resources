@@ -96,24 +96,15 @@ Burnaby, British Columbia, Canada
 
 ## Nagra Kudelski
 **Software Engineer**
-Permanent Full-time · 5 yrs 8 mos · On-site
+Permanent Full-time · Jan 2014 – Aug 2019 · 5 yrs 8 mos · Bengaluru, India · On-site
 
-### Software Engineer
-Jun 2017 – Aug 2019 · 2 yrs 3 mos · Bengaluru, India
+Built full-stack embedded TV applications across 6+ projects for telecom platforms serving 2M+ users, growing from individual contributor to UI Lead coordinating delivery across 3 concurrent projects.
 
-Led UI development across multiple client platforms and coordinated delivery across 3 concurrent projects.
-
-- Served as UI Lead for FOXTEL TV Australia — led development of core features including boot-up menu, content protection, Cloud DVR, parental lock, content blackout, and Google Analytics-based content recommendations.
+- Started delivering embedded UI for Latin American platforms (NET Brazil, Claro Brazil, Claro Colombia) — building features including content protection (CRM), PiP, parental controls, recommendation systems, search, Cloud DVR, and IP channel integration.
+- Supported live 4K content deployment during the 2016 Rio Olympics for 2M+ users, resolving production issues on the ground in Brazil (Nagra São Paulo and Embratel Campinas) — securing a 2-year contract extension with Nagra Kudelski Group.
+- Grew into UI Lead for FOXTEL TV Australia — led development of core features including boot-up menu, content protection, Cloud DVR, parental lock, content blackout, and Google Analytics-based content recommendations.
 - Coordinated a team of 4 engineers across 3 projects (Chivas TV, Euskaltel TV, TBC Taiwan), managing requirements, sprint planning, and production release sign-off.
 - Built cross-platform React applications for Chivas TV and Euskaltel TV, and embedded UI solutions for TBC Taiwan and FOXTEL Australia set-top boxes.
 - Designed highly scalable embedded applications using HTML, CSS, SASS, and JavaScript, optimized for low-end platforms.
 - Implemented Jasmine and Selenium automation to improve feature quality and prevent regressions.
 - Mentored engineers on software engineering best practices, UI architecture, and code quality standards.
-
-### Software Engineer
-Jan 2014 – May 2017 · 3 yrs 5 mos · Bengaluru, India
-
-- Built full-stack embedded TV applications for NET Brazil, Claro Brazil, and Claro Colombia set-top boxes — delivering features including content protection (CRM), PiP, parental controls, recommendation systems, search, Cloud DVR, and IP channel integration.
-- Supported live 4K content deployment during the 2016 Rio Olympics for 2M+ users, resolving production issues on the ground in Brazil (Nagra São Paulo and Embratel Campinas) — securing a 2-year contract extension with Nagra Kudelski Group.
-- Delivered performance improvements across boot-up time, screen navigation, and UI rendering on resource-constrained embedded platforms.
-- Participated in Agile ceremonies: story grooming, sprint planning, demos, and retrospectives.
