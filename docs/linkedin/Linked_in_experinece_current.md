@@ -101,8 +101,9 @@ Built full-stack embedded TV applications across 6+ projects for telecom platfor
 
 - Started delivering embedded UI for Latin American platforms (NET Brazil, Claro Brazil, Claro Colombia) — building features including content protection (CRM), PiP, parental controls, recommendation systems, search, Cloud DVR, and IP channel integration.
 - Supported live 4K content deployment during the 2016 Rio Olympics for 2M+ users, resolving production issues on the ground in Brazil (Nagra São Paulo and Embratel Campinas) — securing a 2-year contract extension with Nagra Kudelski Group.
-- Grew into UI Lead for FOXTEL TV Australia — led development of core features including boot-up menu, content protection, Cloud DVR, parental lock, content blackout, and Google Analytics-based content recommendations.
+- Grew into UI Lead for TBC Taiwan and Chivas TV — overseeing UI architecture, design, code reviews, and end-to-end UI delivery.
 - Coordinated a team of 4 engineers across 3 projects (Chivas TV, Euskaltel TV, TBC Taiwan), managing requirements, sprint planning, and production release sign-off.
+- Key contributor at FOXTEL TV Australia — led development of core features including boot-up menu, content protection, Cloud DVR, parental lock, content blackout, and Google Analytics-based content recommendations.
 - Built cross-platform React applications for Chivas TV and Euskaltel TV, and embedded UI solutions for TBC Taiwan and FOXTEL Australia set-top boxes.
 - Designed highly scalable embedded applications using HTML, CSS, SASS, and JavaScript, optimized for low-end platforms.
 - Implemented Jasmine and Selenium automation to improve feature quality and prevent regressions.
