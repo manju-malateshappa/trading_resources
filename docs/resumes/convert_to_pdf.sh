@@ -58,18 +58,19 @@ for TEX_FILE in "${TEX_FILES[@]}"; do
   fi
 
   BASENAME="$(basename "$TEX_FILE" .tex)"
+  OUTPUT_NAME="Manju_Malateshappa_Resume"
   TMPDIR="$TMPDIR_BASE/$BASENAME"
   mkdir -p "$TMPDIR"
 
-  echo "Converting: $BASENAME.tex -> resume_pdf/$BASENAME.pdf"
+  echo "Converting: $BASENAME.tex -> resume_pdf/$OUTPUT_NAME.pdf"
 
   # Run pdflatex twice for correct page references
   "$PDFLATEX" -interaction=nonstopmode -output-directory="$TMPDIR" "$TEX_FILE" > "$TMPDIR/pdflatex.log" 2>&1
   "$PDFLATEX" -interaction=nonstopmode -output-directory="$TMPDIR" "$TEX_FILE" >> "$TMPDIR/pdflatex.log" 2>&1
 
   if [ -f "$TMPDIR/$BASENAME.pdf" ]; then
-    cp "$TMPDIR/$BASENAME.pdf" "$OUTPUT_DIR/$BASENAME.pdf"
-    echo "  Done -> $OUTPUT_DIR/$BASENAME.pdf"
+    cp "$TMPDIR/$BASENAME.pdf" "$OUTPUT_DIR/$OUTPUT_NAME.pdf"
+    echo "  Done -> $OUTPUT_DIR/$OUTPUT_NAME.pdf"
   else
     echo "  ERROR: PDF generation failed. Check log:"
     tail -20 "$TMPDIR/pdflatex.log"
