@@ -97,7 +97,7 @@ Burnaby, British Columbia, Canada
 **Software Engineer**
 Permanent Full-time · 5 yrs 8 mos · On-site
 
-### Software Engineer (Senior)
+### Software Engineer
 Jun 2017 – Aug 2019 · 2 yrs 3 mos · Bengaluru, India
 
 Led UI development across multiple client platforms and coordinated delivery across 3 concurrent projects.
